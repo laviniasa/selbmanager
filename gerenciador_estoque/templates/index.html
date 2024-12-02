@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gestão de Estoque de Papel e Toner">
+    <meta name="keywords" content="estoque, papel, toner, gestão">
+    <title>Gestão de Estoque de Papel e Toner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Gestão de Estoque de Papel e Toner</h2>
+
+        <!-- Mensagens de erro ou sucesso -->
+        <section>
+            {% if erro_papel %}
+                <div class="error-message">
+                    <span class="icon">&#x26A0;</span> {{ erro_papel }}
+                </div>
+            {% endif %}
+            {% if erro_toner %}
+                <div class="error-message">
+                    <span class="icon">&#x26A0;</span> {{ erro_toner }}
+                </div>
+            {% endif %}
+            {% if mensagem_adicao %}
+                <div class="success-message">
+                    <span class="icon">&#x2713;</span> {{ mensagem_adicao }}
+                </div>
+            {% endif %}
+            {% if mensagem_retirada %}
+                <div class="success-message">
+                    <span class="icon">&#x2713;</span> {{ mensagem_retirada }}
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Estoque de Papel Total -->
+        <section id="estoque-total-papel">
+            <p>Estoque total de Papel: {{ estoque_papel }}</p>
+        </section>
+
+        <!-- Seção de Adicionar e Retirar Papel e Toner -->
+        <section class="row">
+            <!-- Adicionar e Retirar Papel -->
+            <article class="column">
+                <h3>Adicionar Resmas de Papel</h3>
+                <form method="POST" action="{{ url_for('adicionar_papel') }}">
+                    <label for="quantidade">Quantidade de Resmas:</label>
+                    <input type="number" name="quantidade" id="quantidade" required>
+                    <input type="submit" value="Adicionar Papel">
+                </form>
+            </article>
+
+            <!-- Retirar Papel -->
+            <article class="column">
+                <h3>Retirar Resmas de Papel</h3>
+                <form method="POST" action="{{ url_for('retirar_papel') }}">
+                    <label for="quantidade">Quantidade de Resmas:</label>
+                    <input type="number" name="quantidade" id="quantidade" required>
+
+                    <label for="local">Local:</label>
+                    <input type="text" name="local" id="local" required>
+
+                    <input type="submit" value="Retirar Papel">
+                </form>
+            </article>
+        </section>
+
+        <section class="row">
+            <!-- Adicionar Toner -->
+            <article class="column">
+                <h3>Adicionar Toner</h3>
+                <form method="POST" action="{{ url_for('adicionar_toner') }}">
+                    <label for="marca">Marca:</label>
+                    <input type="text" name="marca" id="marca" required>
+
+                    <label for="tipo">Tipo:</label>
+                    <input type="text" name="tipo" id="tipo" required>
+
+                    <label for="quantidade">Quantidade:</label>
+                    <input type="number" name="quantidade" id="quantidade" required>
+
+                    <label for="validade">Validade:</label>
+                    <input type="date" name="validade" id="validade" required>
+
+                    <input type="submit" value="Adicionar Toner">
+                </form>
+            </article>
+
+            <!-- Retirar Toner -->
+            <article class="column">
+                <h3>Retirar Toner</h3>
+                <form method="POST" action="{{ url_for('retirar_toner') }}">
+                    <label for="marca">Marca:</label>
+                    <input type="text" name="marca" id="marca" required>
+
+                    <label for="tipo">Tipo:</label>
+                    <input type="text" name="tipo" id="tipo" required>
+
+                    <label for="quantidade">Quantidade:</label>
+                    <input type="number" name="quantidade" id="quantidade" required>
+
+                    <label for="local">Local:</label>
+                    <input type="text" name="local" id="local" required>
+
+                    <input type="submit" value="Retirar Toner">
+                </form>
+            </article>
+        </section>
+
+        <!-- Histórico de Retiradas -->
+        <section>
+            <h3>Histórico de Retiradas de Papel</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Quantidade</th>
+                        <th>Local</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros_papel %}
+                        <tr>
+                            <td>{{ registro['data'] }}</td>
+                            <td>{{ registro['quantidade'] }}</td>
+                            <td>{{ registro['local'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Histórico de Retiradas de Toner</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Marca</th>
+                        <th>Tipo</th>
+                        <th>Quantidade</th>
+                        <th>Local</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros_toner %}
+                        <tr>
+                            <td>{{ registro['data'] }}</td>
+                            <td>{{ registro['marca'] }}</td>
+                            <td>{{ registro['tipo'] }}</td>
+                            <td>{{ registro['quantidade'] }}</td>
+                            <td>{{ registro['local'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        {% if precisa_reposicao_papel %}
+            <div class="error-message">
+                <span class="icon">&#x26A0;</span> O estoque de papel está abaixo do mínimo!
+            </div>
+        {% endif %}
+        {% if precisa_reposicao_toner %}
+            <div class="error-message">
+                <span class="icon">&#x26A0;</span> O estoque de toner está abaixo do mínimo!
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
