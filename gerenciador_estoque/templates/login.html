@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Página de Login">
+    <meta name="keywords" content="login, sistema de gestão">
+    <title>Login - Sistema de Gestão</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+
+            <!-- Mensagens de erro ou sucesso -->
+            <div class="messages">
+                {% if mensagem_adicao %}
+                    <div class="success-message">
+                        <span class="icon">&#x2713;</span> {{ mensagem_adicao }}
+                    </div>
+                {% endif %}
+                {% if mensagem_erro %}
+                    <div class="error-message">
+                        <span class="icon">&#x26A0;</span> {{ mensagem_erro }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="input-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" name="username" id="username" required placeholder="Digite seu usuário">
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" name="password" id="password" required placeholder="Digite sua senha">
+                </div>
+                
+                <div class="form-actions">
+                    <input type="submit" value="Entrar">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
