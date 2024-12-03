@@ -1,7 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+
+# Definindo uma chave secreta para sessão
+app.secret_key = 'sua_chave_secreta_aqui'
+
+# Usuários fictícios para autenticação
+usuarios = {
+    'admin': generate_password_hash('senha123')
+}
 
 # Classe para gerenciamento de resmas de papel
 class EstoqueDePapel:
@@ -10,13 +19,11 @@ class EstoqueDePapel:
         self.registros = []
         self.estoque_minimo = 10
 
-    def adicionar_papel_ao_estoque(self, quantidade):
-        """Adiciona resmas ao estoque"""
+    def adicionar(self, quantidade):
         if quantidade > 0:
             self.estoque += quantidade
 
-    def retirar_papel_do_estoque(self, quantidade, local):
-        """Retira resmas do estoque, subtraindo da quantidade"""
+    def retirar(self, quantidade, local):
         if quantidade > 0 and quantidade <= self.estoque:
             self.estoque -= quantidade
             data_retirada = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
@@ -24,10 +31,10 @@ class EstoqueDePapel:
             return True
         return False
 
-    def consultar_estoque(self):
+    def consultar(self):
         return self.estoque
 
-    def consultar_registros(self):
+    def registros_estoque(self):
         return self.registros
 
     def precisa_reposicao(self):
@@ -41,16 +48,14 @@ class EstoqueDeToner:
         self.registros = []
         self.estoque_minimo = 5
 
-    def adicionar_toner_ao_estoque(self, marca, tipo, quantidade, validade):
-        """Adiciona toner ao estoque"""
+    def adicionar(self, marca, tipo, quantidade, validade):
         if marca not in self.estoque:
             self.estoque[marca] = {}
         if tipo not in self.estoque[marca]:
             self.estoque[marca][tipo] = {'quantidade': 0, 'validade': validade}
         self.estoque[marca][tipo]['quantidade'] += quantidade
 
-    def retirar_toner_do_estoque(self, marca, tipo, quantidade, local):
-        """Retira toner do estoque"""
+    def retirar(self, marca, tipo, quantidade, local):
         if marca in self.estoque and tipo in self.estoque[marca]:
             if self.estoque[marca][tipo]['quantidade'] >= quantidade:
                 self.estoque[marca][tipo]['quantidade'] -= quantidade
@@ -59,10 +64,10 @@ class EstoqueDeToner:
                 return True
         return False
 
-    def consultar_estoque(self):
+    def consultar(self):
         return self.estoque
 
-    def consultar_registros(self):
+    def registros_estoque(self):
         return self.registros
 
     def precisa_reposicao(self):
@@ -80,40 +85,67 @@ estoque_toner = EstoqueDeToner()
 def obter_dados_estoque():
     """Função auxiliar para obter dados de estoque de papel e toner"""
     return {
-        'estoque_papel': estoque_papel.consultar_estoque(),
-        'registros_papel': estoque_papel.consultar_registros(),
-        'estoque_toner': estoque_toner.consultar_estoque(),
-        'registros_toner': estoque_toner.consultar_registros(),
+        'estoque_papel': estoque_papel.consultar(),
+        'registros_papel': estoque_papel.registros_estoque(),
+        'estoque_toner': estoque_toner.consultar(),
+        'registros_toner': estoque_toner.registros_estoque(),
         'precisa_reposicao_papel': estoque_papel.precisa_reposicao(),
         'precisa_reposicao_toner': estoque_toner.precisa_reposicao()
     }
 
 @app.route('/')
 def index():
+    if 'user' not in session:
+        print("Usuário não autenticado, redirecionando para login...")
+        return redirect(url_for('login'))
+
     dados_estoque = obter_dados_estoque()
+    print(f"Dados de estoque: {dados_estoque}")
     return render_template('index.html', **dados_estoque)
 
-@app.route('/adicionar_papel', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Verifique se o usuário e a senha estão corretos (exemplo simples)
+        if username == 'admin' and password == 'senha123':
+                session['user'] = username  # Garanta que a sessão está sendo configurada
+                return redirect(url_for('index'))  # Redireciona para a página principal
+        else:
+            # Se a autenticação falhar, exibe a mensagem de erro
+            mensagem_erro = "Usuário ou senha incorretos!"
+            return render_template('login.html', mensagem_erro=mensagem_erro)
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash('Você foi desconectado.', 'info')
+    return redirect(url_for('login'))
+
+@app.route('/adicionar_papel', methods=['GET', 'POST'])
 def adicionar_papel():
-    quantidade = int(request.form['quantidade'])
-    estoque_papel.adicionar_papel_ao_estoque(quantidade)
-    mensagem = f"{quantidade} resmas de papel foram adicionadas ao estoque!"
-    
-    dados_estoque = obter_dados_estoque()
-    return render_template('index.html', **dados_estoque, mensagem_adicao=mensagem)
+    if request.method == 'POST':
+        quantidade = int(request.form['quantidade'])
+        estoque_papel.adicionar(quantidade)
+        flash(f"{quantidade} resmas de papel adicionadas ao estoque!", 'success')
+        return redirect(url_for('index'))
+    return render_template('adicionar_papel.html')
 
 @app.route('/retirar_papel', methods=['POST'])
 def retirar_papel():
     quantidade = int(request.form['quantidade'])
     local = request.form['local']
     
-    if not estoque_papel.retirar_papel_do_estoque(quantidade, local):
-        dados_estoque = obter_dados_estoque()
-        return render_template('index.html', **dados_estoque, erro_papel="Estoque insuficiente!")
-    
-    mensagem_retirada = f"{quantidade} resmas de papel foram retiradas do estoque."
-    dados_estoque = obter_dados_estoque()
-    return render_template('index.html', **dados_estoque, mensagem_retirada=mensagem_retirada)
+    if not estoque_papel.retirar(quantidade, local):
+        flash("Estoque insuficiente para retirar o papel!", 'danger')
+        return redirect(url_for('index'))
+
+    flash(f"{quantidade} resmas de papel retiradas do estoque.", 'success')
+    return redirect(url_for('index'))
 
 @app.route('/adicionar_toner', methods=['POST'])
 def adicionar_toner():
@@ -122,7 +154,8 @@ def adicionar_toner():
     quantidade = int(request.form['quantidade'])
     validade = request.form['validade']
     
-    estoque_toner.adicionar_toner_ao_estoque(marca, tipo, quantidade, validade)
+    estoque_toner.adicionar(marca, tipo, quantidade, validade)
+    flash('Toner adicionado com sucesso!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/retirar_toner', methods=['POST'])
@@ -132,11 +165,40 @@ def retirar_toner():
     quantidade = int(request.form['quantidade'])
     local = request.form['local']
     
-    if not estoque_toner.retirar_toner_do_estoque(marca, tipo, quantidade, local):
-        dados_estoque = obter_dados_estoque()
-        return render_template('index.html', **dados_estoque, erro_toner="Estoque de toner insuficiente!")
-    
+    if not estoque_toner.retirar(marca, tipo, quantidade, local):
+        flash("Estoque insuficiente para retirar o toner!", 'danger')
+        return redirect(url_for('index'))
+
+    flash('Toner retirado com sucesso!', 'success')
     return redirect(url_for('index'))
+
+# Adicionando a rota de signup
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        
+        if password != confirm_password:
+            flash("As senhas não coincidem!", 'danger')
+            return redirect(url_for('signup'))
+        
+        if username in usuarios:
+            flash("Usuário já existe!", 'danger')
+            return redirect(url_for('signup'))
+        
+        usuarios[username] = generate_password_hash(password)
+        flash(f"Usuário {username} cadastrado com sucesso!", 'success')
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
+# Definindo o endpoint dashboard
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
