@@ -36,6 +36,11 @@
             {% endif %}
         </section>
 
+        <!-- Seção de Boas-Vindas e Logout -->
+        <section class="welcome-section">
+            <a href="{{ url_for('logout') }}" class="btn-logout">Sair</a>
+        </section>
+
         <!-- Estoque de Papel Total -->
         <section id="estoque-total-papel">
             <p>Estoque total de Papel: {{ estoque_papel }}</p>
@@ -157,6 +162,7 @@
             </table>
         </section>
 
+        <!-- Avisos de Estoque Abaixo do Mínimo -->
         {% if precisa_reposicao_papel %}
             <div class="error-message">
                 <span class="icon">&#x26A0;</span> O estoque de papel está abaixo do mínimo!
