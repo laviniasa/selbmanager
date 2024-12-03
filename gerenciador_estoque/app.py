@@ -12,6 +12,30 @@ usuarios = {
     'admin': generate_password_hash('senha123')
 }
 
+class SolicitaçãoDeImpressao:
+    def __init__(self):
+        self.solicitacoes = []
+
+    def adicionar(self, tipo_impressao, plastificacao, encadernacao, refilagem, quantidade, solicitante, departamento):
+        solicitacao = {
+            'data': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+            'tipo_impressao': tipo_impressao,
+            'plastificacao': plastificacao,
+            'encadernacao': encadernacao,
+            'refilagem': refilagem,
+            'quantidade': quantidade,
+            'solicitante': solicitante,
+            'departamento': departamento
+        }
+        self.solicitacoes.append(solicitacao)
+
+    def consultar(self):
+        return self.solicitacoes
+
+
+# Instanciando objeto de solicitações de impressão
+solicitacoes_impressao = SolicitaçãoDeImpressao()
+
 # Classe para gerenciamento de resmas de papel
 class EstoqueDePapel:
     def __init__(self):
@@ -81,6 +105,7 @@ class EstoqueDeToner:
 # Instanciando objetos de estoque
 estoque_papel = EstoqueDePapel()
 estoque_toner = EstoqueDeToner()
+solicitacoes_impressao = SolicitaçãoDeImpressao()
 
 def obter_dados_estoque():
     """Função auxiliar para obter dados de estoque de papel e toner"""
@@ -92,6 +117,32 @@ def obter_dados_estoque():
         'precisa_reposicao_papel': estoque_papel.precisa_reposicao(),
         'precisa_reposicao_toner': estoque_toner.precisa_reposicao()
     }
+
+@app.route('/solicitacoes', methods=['GET', 'POST'])
+def solicitacoes():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        tipo_impressao = request.form['tipo_impressao']
+        plastificacao = 'sim' if 'plastificacao' in request.form else 'não'
+        encadernacao = 'sim' if 'encadernacao' in request.form else 'não'
+        refilagem = 'sim' if 'refilagem' in request.form else 'não'
+        quantidade = int(request.form['quantidade'])
+        solicitante = request.form['solicitante']
+        departamento = request.form['departamento']
+
+        if quantidade <= 0:
+            flash('A quantidade de cópias deve ser maior que zero.', 'danger')
+            return redirect(url_for('solicitacoes'))
+
+        solicitacoes_impressao.adicionar(tipo_impressao, plastificacao, encadernacao, refilagem, quantidade, solicitante, departamento)
+        flash('Solicitação de impressão registrada com sucesso!', 'success')
+
+        return redirect(url_for('solicitacoes'))
+
+    return render_template('solicitacoes.html', solicitacoes=solicitacoes_impressao.consultar())
+
 
 @app.route('/')
 def index():
@@ -110,9 +161,9 @@ def login():
         password = request.form['password']
 
         # Verifique se o usuário e a senha estão corretos (exemplo simples)
-        if username == 'admin' and password == 'senha123':
-                session['user'] = username  # Garanta que a sessão está sendo configurada
-                return redirect(url_for('index'))  # Redireciona para a página principal
+        if username in usuarios and check_password_hash(usuarios[username], password):
+            session['user'] = username  # Garanta que a sessão está sendo configurada
+            return redirect(url_for('index'))  # Redireciona para a página principal
         else:
             # Se a autenticação falhar, exibe a mensagem de erro
             mensagem_erro = "Usuário ou senha incorretos!"
@@ -181,24 +232,18 @@ def signup():
         confirm_password = request.form['confirm_password']
         
         if password != confirm_password:
-            flash("As senhas não coincidem!", 'danger')
-            return redirect(url_for('signup'))
-        
+            flash("As senhas não correspondem!", 'danger')
+            return render_template('signup.html')
+
         if username in usuarios:
             flash("Usuário já existe!", 'danger')
-            return redirect(url_for('signup'))
-        
+            return render_template('signup.html')
+
         usuarios[username] = generate_password_hash(password)
-        flash(f"Usuário {username} cadastrado com sucesso!", 'success')
+        flash("Usuário criado com sucesso!", 'success')
         return redirect(url_for('login'))
-
+        
     return render_template('signup.html')
-
-# Definindo o endpoint dashboard
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
-
