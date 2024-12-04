@@ -3,126 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gestão de Solicitações de Impressão">
+    <meta name="keywords" content="impressão, solicitações, gestão">
     <title>Solicitações de Impressão</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilo dos botões */
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: #FFBF00;  /* Cor amarela ajustada */
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease; /* Efeito de transição */
+        }
+
+        .btn:hover {
+            transform: scale(1.1); /* Aumenta o botão */
+            background-color: #FF9F00; /* Cor de fundo alterada no hover para um tom mais escuro */
+        }
+
+        /* Tabela e conteúdo */
+        table th, table td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        /* Formulários */
+        form label {
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        /* Estilo do formulário */
+        form {
+            background-color: #F8F3E2;  /* Fundo claro com o tom de amarelo desejado */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
-<body>
-    <div class="container mt-4">
-        <h2>Solicitações de Impressão</h2>
+<body style="font-family: Arial, sans-serif; background-color: #fff; color: #000; padding: 20px;">
 
-        <!-- Mensagens de feedback -->
-        {% with mensagens = get_flashed_messages(with_categories=true) %}
-            {% if mensagens %}
-                <div class="alert alert-{{ mensagens[0][0] }}">
-                    {{ mensagens[0][1] }}
-                </div>
-            {% endif %}
-        {% endwith %}
+    <h2 style="text-align: center; color: #000000;">Solicitações de Impressão</h2>
 
-        <!-- Formulário para adicionar uma nova solicitação -->
-        <form action="{{ url_for('solicitacoes') }}" method="POST">
-            <div class="form-group">
-                <label for="tipo_impressao">Tipo de Impressão</label>
-                <select class="form-control" id="tipo_impressao" name="tipo_impressao" required>
-                    <option value="preto_e_branco">Preto e Branco</option>
-                    <option value="colorido">Colorido</option>
-                </select>
+    <!-- Mensagens de feedback -->
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            <div class="alert alert-{{ mensagens[0][0] }}">
+                {{ mensagens[0][1] }}
             </div>
-            <div class="form-group">
-                <label for="plastificacao">Plastificação</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="plastificacao" name="plastificacao">
-                    <label class="form-check-label" for="plastificacao">
-                        Sim
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="encadernacao">Encadernação</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="encadernacao" name="encadernacao">
-                    <label class="form-check-label" for="encadernacao">
-                        Sim
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="refilagem">Refilagem</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="refilagem" name="refilagem">
-                    <label class="form-check-label" for="refilagem">
-                        Sim
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="quantidade">Quantidade de Impressões</label>
-                <input type="number" class="form-control" id="quantidade" name="quantidade" required min="1">
-            </div>
-            <div class="form-group">
-                <label for="solicitante">Solicitante</label>
-                <input type="text" class="form-control" id="solicitante" name="solicitante" required>
-            </div>
-            <div class="form-group">
-                <label for="departamento">Departamento</label>
-                <input type="text" class="form-control" id="departamento" name="departamento" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Registrar Solicitação</button>
-        </form>
-
-        <hr>
-
-        <!-- Listagem das solicitações registradas -->
-        <h3 class="mt-4">Solicitações Registradas</h3>
-        {% if solicitacoes %}
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Tipo de Impressão</th>
-                        <th>Plastificação</th>
-                        <th>Encadernação</th>
-                        <th>Refilagem</th>
-                        <th>Quantidade</th>
-                        <th>Solicitante</th>
-                        <th>Departamento</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for solicitacao in solicitacoes %}
-                    <tr>
-                        <td>{{ solicitacao['data'] }}</td>
-                        <td>
-                            {% if solicitacao['tipo_impressao'] == 'preto_e_branco' %}
-                                Preto e Branco
-                            {% elif solicitacao['tipo_impressao'] == 'colorido' %}
-                                Colorido
-                            {% else %}
-                                {{ solicitacao['tipo_impressao'] }}
-                            {% endif %}
-                        </td>
-                        <td>{{ solicitacao['plastificacao'] }}</td>
-                        <td>{{ solicitacao['encadernacao'] }}</td>
-                        <td>{{ solicitacao['refilagem'] }}</td>
-                        <td>{{ solicitacao['quantidade'] }}</td>
-                        <td>{{ solicitacao['solicitante'] }}</td>
-                        <td>{{ solicitacao['departamento'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="alert alert-warning">Não há solicitações registradas.</p>
         {% endif %}
+    {% endwith %}
 
-        <!-- Botão Voltar -->
-        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-4">Voltar</a>
+    <!-- Botões de Navegação -->
+    <section style="margin-bottom: 20px; text-align: right;">
+        <a href="{{ url_for('index') }}" class="btn">Voltar</a>
+    </section>
 
-    </div>
+    <!-- Formulário para Solicitação -->
+    <form action="{{ url_for('solicitacoes') }}" method="POST">
+        <div class="form-group">
+            <label for="tipo_impressao">Tipo de Impressão</label>
+            <select class="form-control" id="tipo_impressao" name="tipo_impressao" required>
+                <option value="preto_e_branco">Preto e Branco</option>
+                <option value="colorido">Colorido</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="plastificacao">Plastificação</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="plastificacao" name="plastificacao">
+                <label class="form-check-label" for="plastificacao">
+                    Sim
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="encadernacao">Encadernação</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="encadernacao" name="encadernacao">
+                <label class="form-check-label" for="encadernacao">
+                    Sim
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="refilagem">Refilagem</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="refilagem" name="refilagem">
+                <label class="form-check-label" for="refilagem">
+                    Sim
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="quantidade">Quantidade de Impressões</label>
+            <input type="number" class="form-control" id="quantidade" name="quantidade" required min="1">
+        </div>
+        <div class="form-group">
+            <label for="solicitante">Solicitante</label>
+            <input type="text" class="form-control" id="solicitante" name="solicitante" required>
+        </div>
+        <div class="form-group">
+            <label for="departamento">Departamento</label>
+            <input type="text" class="form-control" id="departamento" name="departamento" required>
+        </div>
+        <button type="submit" class="btn">Registrar Solicitação</button>
+    </form>
+
+    <hr>
+
+    <!-- Listagem das Solicitações -->
+    <h3 class="mt-4" style="color: #000000;">Solicitações Registradas</h3>
+    {% if solicitacoes %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo de Impressão</th>
+                    <th>Plastificação</th>
+                    <th>Encadernação</th>
+                    <th>Refilagem</th>
+                    <th>Quantidade</th>
+                    <th>Solicitante</th>
+                    <th>Departamento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitacao in solicitacoes %}
+                <tr>
+                    <td>{{ solicitacao['data'] }}</td>
+                    <td>
+                        {% if solicitacao['tipo_impressao'] == 'preto_e_branco' %}
+                            Preto e Branco
+                        {% elif solicitacao['tipo_impressao'] == 'colorido' %}
+                            Colorido
+                        {% else %}
+                            {{ solicitacao['tipo_impressao'] }}
+                        {% endif %}
+                    </td>
+                    <td>{{ solicitacao['plastificacao'] }}</td>
+                    <td>{{ solicitacao['encadernacao'] }}</td>
+                    <td>{{ solicitacao['refilagem'] }}</td>
+                    <td>{{ solicitacao['quantidade'] }}</td>
+                    <td>{{ solicitacao['solicitante'] }}</td>
+                    <td>{{ solicitacao['departamento'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="alert alert-warning">Não há solicitações registradas.</p>
+    {% endif %}
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>
