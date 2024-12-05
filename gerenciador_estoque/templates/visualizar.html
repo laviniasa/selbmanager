@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Chamados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        /* Container de chamados */
+        .chamados-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .chamado-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chamado-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .chamado-box h3 {
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .chamado-box p {
+            color: #555;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 30px;
+        }
+
+        .back-btn:hover {
+            background-color: #e53935;
+        }
+
+        .voltar-btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 30px;
+        }
+
+        .voltar-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Visualizar Chamados</h1>
+
+    <!-- Container para os chamados -->
+    <div class="chamados-container">
+        {% for chamado in chamados %}
+        <div class="chamado-box">
+            <h3>{{ chamado.titulo }}</h3>
+            <p><strong>Nome:</strong> {{ chamado.nome }}</p>
+            <p><strong>Setor:</strong> {{ chamado.setor }}</p>
+
+            <p><strong>Ação Selecionada:</strong> {{ chamado.acao }}</p>
+            
+            {% if chamado.acao == 'solicitar_material' %}
+                <p><strong>Material Solicitado:</strong> {{ chamado.material }}</p>
+                {% if chamado.material == 'papel' %}
+                    <p><strong>Quantidade de Papel:</strong> {{ chamado.quantidade }}</p>
+                {% endif %}
+            {% elif chamado.acao == 'relatar_problema' %}
+                <p><strong>Problema Relatado:</strong> {{ chamado.problema }}</p>
+                {% if chamado.problema == 'outro' %}
+                    <p><strong>Descrição do Problema:</strong> {{ chamado.descricao }}</p>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Botões de Logout e Voltar -->
+    <a href="{{ url_for('logout') }}" class="back-btn">Logout</a>
+    <a href="{{ url_for('chamado') }}" class="voltar-btn">Voltar para Chamados</a>
+
+</body>
+
+</html>
