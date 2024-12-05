@@ -97,6 +97,19 @@
             background-color: #2196F3;
         }
 
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #e53935;
+        }
     </style>
 </head>
 
@@ -119,7 +132,7 @@
     <div class="chamados-container">
         {% for chamado in chamados %}
         <div class="chamado-box">
-            <h3>{{ chamado.titulo }}</h3>
+            <h3>{{ chamado.acao }}</h3> <!-- Exibindo a ação do chamado -->
             <p><strong>Nome:</strong> {{ chamado.nome }}</p>
             <p><strong>Setor:</strong> {{ chamado.setor }}</p>
 
@@ -136,14 +149,17 @@
                     <p><strong>Descrição do Problema:</strong> {{ chamado.descricao }}</p>
                 {% endif %}
             {% endif %}
+
+            <!-- Botão de excluir -->
+            <form method="POST" action="{{ url_for('excluir_chamado', id=chamado.id) }}" style="display:inline;">
+                <button type="submit" class="delete-btn">Excluir</button>
+            </form>
         </div>
         {% endfor %}
     </div>
 
     <!-- Botões de Logout e Voltar -->
-    <a href="{{ url_for('logout') }}" class="back-btn">Logout</a>
     <a href="{{ url_for('index') }}" class="voltar-btn">Voltar</a>
-
 
 </body>
 
