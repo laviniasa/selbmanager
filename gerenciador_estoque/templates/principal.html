@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 24px;
+            padding: 20px 40px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            width: 300px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .btn:active {
+            background-color: #388e3c;
+        }
+
+        /* Ajuste para o título */
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Página Principal</h1>
+    </header>
+
+    <section>
+        <h2>Bem-vindo à Página Principal!</h2>
+        <p>Selecione uma das opções abaixo:</p>
+        <div class="buttons-container">
+            <a href="{{ url_for('index') }}" class="btn">Estoque</a>
+            <a href="{{ url_for('solicitacoes') }}" class="btn">Solicitações</a>
+            <a href="{{ url_for('login') }}" class="btn">Login</a>
+            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+            <!-- Novo botão para Chamado -->
+            <a href="{{ url_for('chamado') }}" class="btn">Chamado</a>
+        </div>
+    </section>
+</body>
+</html>
+    
