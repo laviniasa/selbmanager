@@ -51,14 +51,19 @@
             margin-bottom: 10px;
         }
 
-        .back-btn {
+        .back-btn, .voltar-btn {
             display: inline-block;
-            background-color: #f44336;
-            color: white;
             padding: 10px 20px;
             border-radius: 5px;
             text-decoration: none;
             margin-top: 30px;
+            text-align: center;
+            width: 200px;
+        }
+
+        .back-btn {
+            background-color: #f44336;
+            color: white;
         }
 
         .back-btn:hover {
@@ -66,24 +71,49 @@
         }
 
         .voltar-btn {
-            display: inline-block;
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-top: 30px;
         }
 
         .voltar-btn:hover {
             background-color: #45a049;
         }
+
+        /* Estilo para mensagens flash */
+        .flash-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .flash-error {
+            background-color: #f44336;
+        }
+
+        .flash-info {
+            background-color: #2196F3;
+        }
+
     </style>
 </head>
 
 <body>
 
     <h1>Visualizar Chamados</h1>
+
+    <!-- Exibir mensagens flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-message {% if messages[0][0] == 'error' %}flash-error{% elif messages[0][0] == 'info' %}flash-info{% endif %}">
+                {% for category, message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <!-- Container para os chamados -->
     <div class="chamados-container">
@@ -112,7 +142,8 @@
 
     <!-- Botões de Logout e Voltar -->
     <a href="{{ url_for('logout') }}" class="back-btn">Logout</a>
-    <a href="{{ url_for('chamado') }}" class="voltar-btn">Voltar para Chamados</a>
+    <a href="{{ url_for('index') }}" class="voltar-btn">Voltar</a>
+
 
 </body>
 
