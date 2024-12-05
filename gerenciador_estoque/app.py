@@ -15,7 +15,11 @@ usuarios = {
 chamados = []
 
 class Chamado:
+    id_counter = 1  # Contador para gerar IDs únicos
+
     def __init__(self, nome, setor, celular, acao, material=None, quantidade=None, problema=None, descricao=None):
+        self.id = Chamado.id_counter  # Atribui o ID único ao chamado
+        Chamado.id_counter += 1  # Incrementa o contador para o próximo ID
         self.nome = nome
         self.setor = setor
         self.celular = celular
@@ -27,13 +31,12 @@ class Chamado:
         self.data = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 
     def __repr__(self):
-        return f"Chamado({self.nome}, {self.setor}, {self.acao}, {self.material})"
-    
+        return f"Chamado({self.id}, {self.nome}, {self.setor}, {self.acao}, {self.material})"
+
 # Função auxiliar para adicionar o chamado à lista global
 def adicionar_chamado(chamado):
     """Adiciona um chamado à lista de chamados"""
     chamados.append(chamado)
-    
 
 # Classe que gerencia as solicitações de impressão
 class SolicitacaoImpressao:
@@ -363,6 +366,19 @@ def signup():
         return redirect(url_for('login'))
 
     return render_template('signup.html')
+
+@app.route('/excluir_chamado/<int:id>', methods=['POST'])
+def excluir_chamado(id):
+    # Encontra o chamado pelo ID
+    chamado = next((ch for ch in chamados if ch.id == id), None)
+
+    if chamado:
+        chamados.remove(chamado)  # Remove da lista
+        flash('Chamado excluído com sucesso!', 'success')
+    else:
+        flash('Chamado não encontrado.', 'error')
+
+    return redirect(url_for('visualizar'))
 
 
 if __name__ == '__main__':
