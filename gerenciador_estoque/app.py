@@ -221,9 +221,12 @@ def processar_chamado():
         'descricao': chamado.descricao
     }
 
-    # Flash message
-    flash('Chamado enviado, aguarde para ser atendido!', 'success')
-    return redirect(url_for('visualizar'))
+    # Flash message para informar sucesso
+    flash('Chamado enviado com sucesso, aguarde para ser atendido!', 'success')
+
+    # Redireciona para a página principal
+    return redirect(url_for('principal'))
+
 
 
 
@@ -240,17 +243,21 @@ def visualizar():
         # Após adicionar, remover o chamado da sessão para evitar duplicação
         session.pop('chamado', None)
 
-    # Exibe a lista de chamados
+    # Exibe a lista de chamados e mensagens de flash
     return render_template('visualizar.html', chamados=chamados)
+
 
 
 
 @app.route('/principal')
 def principal():
+    # Verifica se o usuário está autenticado na sessão
     if 'user' not in session:
-        return redirect(url_for('login'))  # Se o usuário não estiver autenticado, redireciona para login
+        return redirect(url_for('login'))  # Se o usuário não estiver autenticado, redireciona para o login
 
+    # Se o usuário estiver autenticado, renderiza a página principal
     return render_template('principal.html')
+
 
 
 # Rota para login do usuário
