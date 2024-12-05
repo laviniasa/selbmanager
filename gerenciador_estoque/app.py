@@ -12,6 +12,29 @@ usuarios = {
     'admin': generate_password_hash('senha123')  # Senha hash para autenticação
 }
 
+chamados = []
+
+class Chamado:
+    def __init__(self, nome, setor, celular, acao, material=None, quantidade=None, problema=None, descricao=None):
+        self.nome = nome
+        self.setor = setor
+        self.celular = celular
+        self.acao = acao
+        self.material = material
+        self.quantidade = quantidade
+        self.problema = problema
+        self.descricao = descricao
+        self.data = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+
+    def __repr__(self):
+        return f"Chamado({self.nome}, {self.setor}, {self.acao}, {self.material})"
+    
+# Função auxiliar para adicionar o chamado à lista global
+def adicionar_chamado(chamado):
+    """Adiciona um chamado à lista de chamados"""
+    chamados.append(chamado)
+    
+
 # Classe que gerencia as solicitações de impressão
 class SolicitacaoImpressao:
     def __init__(self):
@@ -155,15 +178,79 @@ def solicitacoes():
 
     return render_template('solicitacoes.html', solicitacoes=solicitacoes_impressao.consultar())
 
-
-# Rota principal (index) que exibe informações de estoque
 @app.route('/')
 def index():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    # Passando os dados de estoque com a função
+    return render_template('index.html', **obter_dados_estoque())
 
-    dados_estoque = obter_dados_estoque()
-    return render_template('index.html', **dados_estoque)
+@app.route('/chamado', methods=['GET'])
+def chamado():
+    # Exibe o formulário para abrir um chamado
+    return render_template('chamado.html')
+
+@app.route('/processar_chamado', methods=['POST'])
+def processar_chamado():
+    # Pegando os dados do formulário
+    nome = request.form.get('nome')
+    setor = request.form.get('setor')
+    celular = request.form.get('celular')
+    acao = request.form.get('acao')
+
+    # Coletando as informações adicionais dependendo da ação escolhida
+    chamado = None
+
+    if acao == 'solicitar_material':
+        material = request.form.get('material')
+        quantidade = request.form.get('quantidade') if 'quantidade' in request.form else None
+        chamado = Chamado(nome=nome, setor=setor, celular=celular, acao=acao, material=material, quantidade=quantidade)
+
+    elif acao == 'relatar_problema':
+        problema = request.form.get('problema')
+        descricao = request.form.get('descricao') if 'descricao' in request.form else None
+        chamado = Chamado(nome=nome, setor=setor, celular=celular, acao=acao, problema=problema, descricao=descricao)
+
+    # Armazenando o chamado na sessão temporariamente
+    session['chamado'] = {
+        'nome': chamado.nome,
+        'setor': chamado.setor,
+        'celular': chamado.celular,
+        'acao': chamado.acao,
+        'material': chamado.material,
+        'quantidade': chamado.quantidade,
+        'problema': chamado.problema,
+        'descricao': chamado.descricao
+    }
+
+    # Flash message
+    flash('Chamado enviado, aguarde para ser atendido!', 'success')
+    return redirect(url_for('visualizar'))
+
+
+
+
+@app.route('/visualizar')
+def visualizar():
+    # Recuperando o chamado da sessão
+    chamado_data = session.get('chamado')
+
+    if chamado_data:
+        chamado = Chamado(**chamado_data)
+        adicionar_chamado(chamado)  # Adiciona o chamado na lista global
+
+        # Após adicionar, remover o chamado da sessão para evitar duplicação
+        session.pop('chamado', None)
+
+    # Exibe a lista de chamados
+    return render_template('visualizar.html', chamados=chamados)
+
+
+
+@app.route('/principal')
+def principal():
+    if 'user' not in session:
+        return redirect(url_for('login'))  # Se o usuário não estiver autenticado, redireciona para login
+
+    return render_template('principal.html')
 
 
 # Rota para login do usuário
