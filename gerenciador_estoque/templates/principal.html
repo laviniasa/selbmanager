@@ -73,13 +73,10 @@
     </header>
 
     <section>
-        <h2>Bem-vindo à Página Principal!</h2>
         <p>Selecione uma das opções abaixo:</p>
         <div class="buttons-container">
-            <a href="{{ url_for('index') }}" class="btn">Estoque</a>
-            <a href="{{ url_for('solicitacoes') }}" class="btn">Solicitações</a>
+
             <a href="{{ url_for('login') }}" class="btn">Login</a>
-            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
             <!-- Novo botão para Chamado -->
             <a href="{{ url_for('chamado') }}" class="btn">Chamado</a>
         </div>
