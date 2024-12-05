@@ -103,32 +103,34 @@
 
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; padding: 20px;">
 
-    <!-- Menu de navegação -->
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e1e1e1;">
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                <!-- Texto "Estoque" à esquerda com estilo navbar-brand -->
+  <!-- Menu de navegação -->
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e1e1e1;">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <!-- Texto "Estoque" à esquerda com estilo navbar-brand -->
+            <li class="nav-item">
+                <span class="navbar-brand" style="color: #ffffff;">Estoque</span>
+            </li>
+            
+            <!-- Itens de navegação à direita -->
+            <div style="display: flex;">
                 <li class="nav-item">
-                    <span class="navbar-brand" style="color: #ffffff;">Estoque</span>
+                    <a class="nav-link" href="/solicitacoes">Solicitações</a>
                 </li>
-                
-                <!-- Itens de navegação à direita -->
-                <div style="display: flex;">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/solicitacoes">Solicitações</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/visualizar">Chamados</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Sair</a>
-                    </li>
-                </div>
-            </ul>
-        </div>
-        
-                          
-    </nav>
+                <li class="nav-item">
+                    <a class="nav-link" href="/visualizar">Chamados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/principal">Principal</a> <!-- Novo link para a página principal -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Sair</a>
+                </li>
+            </div>
+        </ul>
+    </div>
+</nav>
+
 
     <!-- Conteúdo principal -->
     <div class="container">
@@ -174,6 +176,26 @@
                     <button type="submit" class="btn mt-2">Adicionar Toner</button>
                 </form>
             </div>
+            
+            <div class="form-container">
+                <h3>Retirar Toner</h3>
+                <form method="POST" action="{{ url_for('retirar_toner') }}">
+                    <label for="marca">Marca:</label>
+                    <input type="text" name="marca" id="marca" class="form-control" required>
+            
+                    <label for="tipo">Tipo:</label>
+                    <input type="text" name="tipo" id="tipo" class="form-control" required>
+            
+                    <label for="quantidade">Quantidade:</label>
+                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+            
+                    <label for="local">Local:</label>
+                    <input type="text" name="local" id="local" class="form-control" required>
+            
+                    <button type="submit" class="btn mt-2">Retirar Toner</button>
+                </form>
+            </div>
+            
         </section>
 
         <!-- Histórico de Retiradas -->
