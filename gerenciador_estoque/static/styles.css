@@ -592,3 +592,42 @@ footer {
     background-color: #ddd;
     color: black;
 }
+.flash-messages {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.flash-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-message.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.messages {
+    margin-top: 20px;
+}
+
+.error-message {
+    background-color: #f8d7da; /* Cor de fundo suave */
+    color: #721c24; /* Cor de texto */
+    border: 1px solid #f5c6cb; /* Borda leve */
+    padding: 8px 12px; /* Menos padding para reduzir o tamanho */
+    border-radius: 20px; /* Bordas arredondadas */
+    font-size: 14px; /* Tamanho de fonte menor */
+    display: flex;
+    align-items: center;
+    max-width: 400px; /* Limita a largura */
+    margin: 0 auto; /* Centraliza a mensagem */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombras sutis */
+}
+
+.error-message .icon {
+    margin-right: 8px; /* Pequeno espaço entre o ícone e o texto */
+    font-size: 18px; /* Tamanho do ícone */
+}
