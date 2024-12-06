@@ -6,84 +6,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizar Chamados</title>
     <style>
+        /* Reset básico e fontes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
             padding: 30px;
+            color: #333;
         }
 
         h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
+            color: #2C3E50;
+            margin-bottom: 40px;
+            font-size: 2em;
         }
 
-        /* Container de chamados */
+        /* Estilo da container */
         .chamados-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             padding: 0 20px;
+            margin-top: 30px;
         }
 
+        /* Estilo de cada chamado */
         .chamado-box {
-            background-color: white;
+            background-color: #fff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 180px; /* Ajuste para consistência de tamanho */
         }
 
         .chamado-box:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
         }
 
         .chamado-box h3 {
-            color: #333;
-            font-size: 1.2em;
-            margin-bottom: 10px;
+            color: #34495E;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: capitalize;
         }
 
         .chamado-box p {
-            color: #555;
+            color: #7F8C8D;
             font-size: 1em;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .back-btn, .voltar-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-top: 30px;
-            text-align: center;
-            width: 200px;
-        }
-
-        .back-btn {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .back-btn:hover {
-            background-color: #e53935;
-        }
-
-        .voltar-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .voltar-btn:hover {
-            background-color: #45a049;
+        .chamado-box p strong {
+            color: #34495E;
         }
 
         /* Estilo para mensagens flash */
         .flash-message {
             background-color: #4CAF50;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border-radius: 5px;
             margin-bottom: 20px;
             text-align: center;
@@ -97,19 +89,57 @@
             background-color: #2196F3;
         }
 
+        /* Botão de excluir */
         .delete-btn {
-            background-color: #f44336;
+            background-color: #E74C3C;
             color: white;
-            padding: 5px 10px;
+            padding: 8px 20px;
             border-radius: 5px;
             border: none;
             cursor: pointer;
-            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
         }
 
         .delete-btn:hover {
-            background-color: #e53935;
+            background-color: #C0392B;
         }
+
+        /* Botão de voltar */
+        .voltar-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #2ECC71;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1em;
+            margin-top: 40px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .voltar-btn:hover {
+            background-color: #27AE60;
+            transform: scale(1.05);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .chamados-container {
+                grid-template-columns: 1fr; /* 1 coluna em telas pequenas */
+            }
+
+            .voltar-btn {
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
 
@@ -158,7 +188,7 @@
         {% endfor %}
     </div>
 
-    <!-- Botões de Logout e Voltar -->
+    <!-- Botão de Voltar -->
     <a href="{{ url_for('index') }}" class="voltar-btn">Voltar</a>
 
 </body>
