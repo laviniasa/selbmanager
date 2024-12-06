@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
+usuarios = {}
+
 # Definindo uma chave secreta para sessão
 app.secret_key = 'sua_chave_secreta_aqui'
 
@@ -62,7 +64,6 @@ class SolicitacaoImpressao:
         return self.solicitacoes
 
 
-# Classe para gerenciamento do estoque de papel
 class EstoqueDePapel:
     def __init__(self):
         self.estoque = 0
@@ -73,6 +74,8 @@ class EstoqueDePapel:
         """Adiciona uma quantidade ao estoque de papel"""
         if quantidade > 0:
             self.estoque += quantidade
+            return True  # Retorna True se a adição foi bem-sucedida
+        return False  # Retorna False se a quantidade for inválida (<= 0)
 
     def retirar(self, quantidade, local):
         """Retira uma quantidade do estoque de papel, registrando a operação"""
@@ -99,43 +102,56 @@ class EstoqueDePapel:
 # Classe para gerenciamento do estoque de toner
 class EstoqueDeToner:
     def __init__(self):
-        self.estoque = {}
-        self.registros = []
-        self.estoque_minimo = 5  # Quantidade mínima de toner
+        self.estoque = []  # Lista de toners no estoque
+        self.registros = []  # Lista para registrar as retiradas de toner
+        self.estoque_minimo = 5  # Quantidade mínima de toners
 
     def adicionar(self, marca, tipo, quantidade, validade):
         """Adiciona uma quantidade de toner ao estoque"""
-        if marca not in self.estoque:
-            self.estoque[marca] = {}
-        if tipo not in self.estoque[marca]:
-            self.estoque[marca][tipo] = {'quantidade': 0, 'validade': validade}
-        self.estoque[marca][tipo]['quantidade'] += quantidade
+        if quantidade > 0:
+            toner = {
+                'marca': marca,
+                'tipo': tipo,
+                'quantidade': quantidade,
+                'validade': validade
+            }
+            self.estoque.append(toner)  # Adiciona o toner ao estoque
+            return True  # Retorna True se a adição for bem-sucedida
+        return False  # Retorna False se a quantidade for inválida (<= 0)
 
     def retirar(self, marca, tipo, quantidade, local):
-        """Retira uma quantidade de toner do estoque, registrando a operação"""
-        if marca in self.estoque and tipo in self.estoque[marca]:
-            if self.estoque[marca][tipo]['quantidade'] >= quantidade:
-                self.estoque[marca][tipo]['quantidade'] -= quantidade
-                data_retirada = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-                self.registros.append({'data': data_retirada, 'marca': marca, 'tipo': tipo, 'quantidade': quantidade, 'local': local})
-                return True
-        return False
+        """Retira uma quantidade do estoque de toner, registrando a operação"""
+        if quantidade > 0:
+            for toner in self.estoque:
+                if toner['marca'] == marca and toner['tipo'] == tipo:
+                    if toner['quantidade'] >= quantidade:
+                        toner['quantidade'] -= quantidade  # Subtrai a quantidade retirada do estoque
+                        
+                        # Registra a retirada
+                        data_retirada = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                        self.registros.append({
+                            'data': data_retirada,
+                            'marca': marca,
+                            'tipo': tipo,
+                            'quantidade': quantidade,
+                            'local': local
+                        })
+                        return True  # Retorna True se a retirada for bem-sucedida
+        return False  # Retorna False se não conseguir retirar a quantidade desejada
 
     def consultar(self):
-        """Consulta o estoque de toner"""
+        """Consulta o estoque atual de toners"""
         return self.estoque
 
     def registros_estoque(self):
-        """Retorna os registros de movimentações de toner"""
+        """Retorna os registros de movimentações do estoque de toner"""
         return self.registros
 
     def precisa_reposicao(self):
-        """Verifica se algum toner no estoque precisa de reposição"""
-        for marca in self.estoque.values():
-            for tipo in marca.values():
-                if tipo['quantidade'] <= self.estoque_minimo:
-                    return True
-        return False
+        """Verifica se o estoque de toner precisa ser reabastecido"""
+        return len(self.estoque) <= self.estoque_minimo
+
+
 
 
 # Função auxiliar para obter dados de estoque de papel e toner
@@ -230,10 +246,6 @@ def processar_chamado():
     # Redireciona para a página principal
     return redirect(url_for('principal'))
 
-
-
-
-
 @app.route('/visualizar')
 def visualizar():
     # Recuperando o chamado da sessão
@@ -249,9 +261,6 @@ def visualizar():
     # Exibe a lista de chamados e mensagens de flash
     return render_template('visualizar.html', chamados=chamados)
 
-
-
-
 @app.route('/principal')
 def principal():
     # Verifica se o usuário está autenticado na sessão
@@ -260,8 +269,6 @@ def principal():
 
     # Se o usuário estiver autenticado, renderiza a página principal
     return render_template('principal.html')
-
-
 
 # Rota para login do usuário
 @app.route('/login', methods=['GET', 'POST'])
@@ -274,6 +281,7 @@ def login():
             session['user'] = username
             return redirect(url_for('index'))
 
+        # Se usuário ou senha estiverem incorretos
         flash("Usuário ou senha incorretos!", 'danger')
         return render_template('login.html')
 
@@ -286,28 +294,43 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
 
-
-# Rota para adicionar resmas de papel ao estoque
 @app.route('/adicionar_papel', methods=['POST'])
 def adicionar_papel():
     quantidade = int(request.form['quantidade'])
-    estoque_papel.adicionar(quantidade)
-    #flash(f"{quantidade} resmas de papel adicionadas ao estoque!", 'success')
+
+    if estoque_papel.adicionar(quantidade):
+        flash(f"{quantidade} resmas de papel adicionadas ao estoque.", 'success')
+    else:
+        flash("Erro ao adicionar papel ao estoque.", 'danger')
+
     return redirect(url_for('index'))
 
 
-# Rota para retirar resmas de papel do estoque
 @app.route('/retirar_papel', methods=['POST'])
 def retirar_papel():
-    quantidade = int(request.form['quantidade'])
-    local = request.form['local']
+    try:
+        # Obtém os dados do formulário
+        quantidade = int(request.form['quantidade'])
+        local = request.form['local']
 
-    if not estoque_papel.retirar(quantidade, local):
-        flash("Estoque insuficiente para retirar o papel!", 'danger')
+        # Verifica se a quantidade é válida (positiva)
+        if quantidade <= 0:
+            flash("A quantidade de papel a ser retirada deve ser maior que zero.", 'danger')
+            return redirect(url_for('index'))
+
+        # Tenta retirar a quantidade do estoque
+        if not estoque_papel.retirar(quantidade, local):
+            flash("Estoque insuficiente para retirar o papel!", 'danger')
+            return redirect(url_for('index'))
+
+        # Exibe a mensagem de sucesso
+        flash(f"{quantidade} resmas de papel retiradas do estoque.", 'success')
         return redirect(url_for('index'))
 
-    flash(f"{quantidade} resmas de papel retiradas do estoque.", 'success')
-    return redirect(url_for('index'))
+    except ValueError:
+        # Caso o valor da quantidade não seja um número válido
+        flash("Por favor, insira um número válido para a quantidade de papel.", 'danger')
+        return redirect(url_for('index'))
 
 
 @app.route('/adicionar_toner', methods=['POST'])
@@ -315,21 +338,17 @@ def adicionar_toner():
     marca = request.form['marca']
     tipo = request.form['tipo']
     quantidade = int(request.form['quantidade'])
-    validade = request.form['validade']
+    validade = request.form['validade']  # Validando o campo de data
 
-    # Adiciona o toner ao estoque
-    estoque_toner.adicionar(marca, tipo, quantidade, validade)
-    
-    flash('Toner adicionado com sucesso!', 'success')
+    if estoque_toner.adicionar(marca, tipo, quantidade, validade):  # Chama o método de adicionar no estoque
+        flash(f"{quantidade} toners da marca {marca} adicionados ao estoque.", 'success')  # Exibe sucesso
+    else:
+        flash("Erro ao adicionar toner ao estoque.", 'danger')  # Exibe erro se falhou
 
-    # Recupera a lista de todos os toners registrados
-    toners = estoque_toner.consultar()
-
-    # Redireciona para a página de índice, passando as informações de toner
-    return render_template('index.html', toners=toners, **obter_dados_estoque())
+    return redirect(url_for('index'))  # Redireciona de volta para a página principal
 
 
-# Rota para retirar toner do estoque
+
 @app.route('/retirar_toner', methods=['POST'])
 def retirar_toner():
     marca = request.form['marca']
@@ -337,12 +356,13 @@ def retirar_toner():
     quantidade = int(request.form['quantidade'])
     local = request.form['local']
 
-    if not estoque_toner.retirar(marca, tipo, quantidade, local):
-        flash("Estoque insuficiente para retirar o toner!", 'danger')
-        return redirect(url_for('index'))
+    if estoque_toner.retirar(marca, tipo, quantidade, local):
+        flash(f"{quantidade} toners da marca {marca} retirados do estoque.", 'success')
+    else:
+        flash("Erro ao retirar toner do estoque.", 'danger')
 
-    flash('Toner retirado com sucesso!', 'success')
     return redirect(url_for('index'))
+
 
 
 # Rota para cadastro de novos usuários
@@ -379,6 +399,64 @@ def excluir_chamado(id):
         flash('Chamado não encontrado.', 'error')
 
     return redirect(url_for('visualizar'))
+
+@app.route('/cadastrar')
+def cadastrar():
+    return render_template('cadastrar.html')
+
+# Rota para cadastrar novos usuários
+@app.route('/cadastrar_usuario', methods=['GET', 'POST'])
+def cadastrar_usuario():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        
+        # Verifica se as senhas são iguais
+        if password != confirm_password:
+            flash("As senhas não coincidem!", 'danger')
+            return render_template('cadastrar_usuario.html')
+
+        # Verifica se o usuário já existe
+        if username in usuarios:
+            flash("Usuário já existe!", 'danger')
+            return render_template('cadastrar_usuario.html')
+
+        # Armazenando o usuário com a senha criptografada
+        usuarios[username] = generate_password_hash(password)
+        
+        flash("Usuário cadastrado com sucesso!", 'success')
+        return redirect(url_for('login'))  # Redireciona para a tela de login
+
+    return render_template('cadastrar_usuario.html')
+
+# Rota para alteração de senha
+@app.route('/alterar_senha', methods=['POST'])
+def alterar_senha():
+    username = session.get('user')  # Assume que o usuário está logado
+    if not username:
+        flash("Você precisa estar logado para alterar a senha.", 'danger')
+        return redirect(url_for('login'))
+
+    old_password = request.form['old_password']
+    new_password = request.form['new_password']
+    confirm_new_password = request.form['confirm_new_password']
+    
+    # Verifica se a senha antiga está correta
+    if not check_password_hash(usuarios[username], old_password):
+        flash("Senha antiga incorreta.", 'danger')
+        return redirect(url_for('index'))
+
+    # Verifica se a nova senha e a confirmação coincidem
+    if new_password != confirm_new_password:
+        flash("As novas senhas não coincidem.", 'danger')
+        return redirect(url_for('index'))
+
+    # Atualiza a senha (exemplo usando hash de senha)
+    usuarios[username] = generate_password_hash(new_password)
+    flash("Senha alterada com sucesso!", 'success')
+    return redirect(url_for('index'))
+
 
 
 if __name__ == '__main__':
