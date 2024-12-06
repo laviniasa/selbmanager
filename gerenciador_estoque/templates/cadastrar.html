@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Novo Usuário</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilo do menu de navegação */
+        .navbar {
+            background-color: #f0f0f0;
+        }
+
+        .navbar-nav .nav-item {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            background-color: #e88d00;
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            background-color: #d77a00;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .navbar .navbar-brand {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Estilo do conteúdo principal */
+        .login-container {
+            margin-top: 50px; /* Margem superior para afastar o conteúdo do menu */
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        /* Camada de fundo amarelo */
+        .yellow-background {
+            background-color: #F8F3E2;
+            padding: 30px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .form-actions {
+            margin-top: 15px;
+        }
+
+        .form-actions input {
+            width: 100%;
+            padding: 10px;
+            background-color: #e88d00;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-actions input:hover {
+            background-color: #d77a00;
+            transform: scale(1.05);
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Estilo dos botões do formulário */
+        .btn-custom {
+            background-color: #e88d00;
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 5px;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #d77a00;
+            transform: scale(1.05);
+        }
+
+        /* Responsividade para dispositivos menores */
+        @media (max-width: 768px) {
+            .navbar {
+                text-align: center;
+            }
+
+            .navbar a {
+                padding: 8px 15px;
+            }
+
+            .yellow-background {
+                padding: 20px;
+            }
+
+            .login-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Menu de navegação -->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e1e1e1;">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <li class="nav-item">
+                    <span class="navbar-brand" style="color: #ffffff;">Cadastrar</span>
+                </li>
+                <div style="display: flex;">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/solicitacoes">Solicitações</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/visualizar">Chamados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/principal">Principal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Sair</a>
+                    </li>
+                </div>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Conteúdo do formulário com fundo amarelo -->
+    <div class="container mt-5"> <!-- Adicionando margem superior ao container -->
+        <div class="yellow-background">
+            <!-- Formulário para cadastrar novo usuário -->
+            <h3>Cadastrar Novo Usuário</h3>
+            <form action="/cadastrar_usuario" method="POST">
+                <div class="form-group">
+                    <label for="username">Nome de Usuário:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirmar Senha:</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="btn-custom">Cadastrar</button>
+            </form>
+
+            <!-- Formulário para alteração de senha -->
+            <h3 class="mt-5">Alterar Senha</h3>
+            <form action="/alterar_senha" method="POST">
+                <div class="form-group">
+                    <label for="old_password">Senha Antiga:</label>
+                    <input type="password" class="form-control" id="old_password" name="old_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new_password">Nova Senha:</label>
+                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_new_password">Confirmar Nova Senha:</label>
+                    <input type="password" class="form-control" id="confirm_new_password" name="confirm_new_password" required>
+                </div>
+                <button type="submit" class="btn-custom">Alterar Senha</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
