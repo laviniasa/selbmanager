@@ -14,18 +14,18 @@
             <center><h2>Login</h2></center>
 
             <!-- Mensagens de erro ou sucesso -->
-            <div class="messages">
-                {% if mensagem_adicao %}
-                    <div class="success-message">
-                        <span class="icon">&#x2713;</span> {{ mensagem_adicao }}
-                    </div>
-                {% endif %}
-                {% if mensagem_erro %}
-                    <div class="error-message">
-                        <span class="icon">&#x26A0;</span> {{ mensagem_erro }}
-                    </div>
-                {% endif %}
-            </div>
+<div class="messages">
+    {% if mensagem_adicao and request.endpoint == 'login' %}
+        <div class="success-message">
+            <span class="icon">&#x2713;</span> {{ mensagem_adicao }}
+        </div>
+    {% endif %}
+    {% if mensagem_erro and request.endpoint == 'login' %}
+        <div class="error-message">
+            <span class="icon">&#x26A0;</span> {{ mensagem_erro }}
+        </div>
+    {% endif %}
+</div>
 
             <form action="{{ url_for('login') }}" method="POST">
                 <div class="input-group">
@@ -44,5 +44,20 @@
             </form>
         </div>
     </div>
+
+    <!-- Script para ocultar a mensagem de erro após 3 segundos -->
+    <script>
+        // Espera o DOM ser carregado
+        window.onload = function() {
+            // Verifica se existe uma mensagem de erro
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                // Após 3 segundos, oculta a mensagem
+                setTimeout(function() {
+                    errorMessage.style.display = 'none';
+                }, 3000); // 3000 milissegundos = 3 segundos
+            }
+        };
+    </script>
 </body>
 </html>
