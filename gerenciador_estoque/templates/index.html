@@ -104,7 +104,7 @@
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; padding: 20px;">
 
   <!-- Menu de navegação -->
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e1e1e1;">
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e1e1e1;">
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
             <!-- Texto "Estoque" à esquerda com estilo navbar-brand -->
@@ -115,13 +115,17 @@
             <!-- Itens de navegação à direita -->
             <div style="display: flex;">
                 <li class="nav-item">
+                    <a class="nav-link" href="/principal">Principal</a> <!-- Novo link para a página principal -->
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/solicitacoes">Solicitações</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/visualizar">Chamados</a>
                 </li>
+                
                 <li class="nav-item">
-                    <a class="nav-link" href="/principal">Principal</a> <!-- Novo link para a página principal -->
+                    <a class="nav-link" href="/cadastrar">Cadastrar</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Sair</a>
@@ -132,8 +136,25 @@
 </nav>
 
 
+
     <!-- Conteúdo principal -->
     <div class="container">
+
+        <!-- Exibindo mensagens de flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Resto do conteúdo da página aqui... -->
+    </div>
 
         <!-- Estoque de Papel Total -->
         <section class="estoque-info">
@@ -141,15 +162,15 @@
         </section>
 
         <!-- Formulários -->
-        <section class="form-section">
-            <div class="form-container">
-                <h3>Adicionar Resmas de Papel</h3>
-                <form method="POST" action="{{ url_for('adicionar_papel') }}">
-                    <label for="quantidade">Quantidade de Resmas:</label>
-                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-                    <button type="submit" class="btn mt-2">Adicionar Papel</button>
-                </form>
-            </div>
+        <div class="form-container">
+    <h3>Adicionar Resmas de Papel</h3>
+    <form method="POST" action="{{ url_for('adicionar_papel') }}">
+        <label for="quantidade">Quantidade de Resmas:</label>
+        <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+        <button type="submit" class="btn mt-2">Adicionar Papel</button>
+    </form>
+</div>
+
 
             <div class="form-container">
                 <h3>Retirar Resmas de Papel</h3>
@@ -161,22 +182,28 @@
                     <button type="submit" class="btn mt-2">Retirar Papel</button>
                 </form>
             </div>
+            
 
             <div class="form-container">
                 <h3>Adicionar Toner</h3>
                 <form method="POST" action="{{ url_for('adicionar_toner') }}">
                     <label for="marca">Marca:</label>
                     <input type="text" name="marca" id="marca" class="form-control" required>
+            
                     <label for="tipo">Tipo:</label>
                     <input type="text" name="tipo" id="tipo" class="form-control" required>
+            
                     <label for="quantidade">Quantidade:</label>
                     <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+            
                     <label for="validade">Validade:</label>
                     <input type="date" name="validade" id="validade" class="form-control" required>
+            
                     <button type="submit" class="btn mt-2">Adicionar Toner</button>
                 </form>
             </div>
             
+
             <div class="form-container">
                 <h3>Retirar Toner</h3>
                 <form method="POST" action="{{ url_for('retirar_toner') }}">
@@ -221,28 +248,29 @@
             </table>
 
             <h3>Histórico de Retiradas de Toner</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Marca</th>
-                        <th>Tipo</th>
-                        <th>Quantidade</th>
-                        <th>Local</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for registro in registros_toner %}
-                    <tr>
-                        <td>{{ registro['data'] }}</td>
-                        <td>{{ registro['marca'] }}</td>
-                        <td>{{ registro['tipo'] }}</td>
-                        <td>{{ registro['quantidade'] }}</td>
-                        <td>{{ registro['local'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Marca</th>
+            <th>Tipo</th>
+            <th>Quantidade</th>
+            <th>Local</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for registro in registros_toner %}
+        <tr>
+            <td>{{ registro['data'] }}</td>
+            <td>{{ registro['marca'] }}</td>
+            <td>{{ registro['tipo'] }}</td>
+            <td>{{ registro['quantidade'] }}</td>
+            <td>{{ registro['local'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
         </section>
 
     </div>
@@ -251,6 +279,19 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Verifica se há mensagens de flash
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-messages .alert');
+            flashMessages.forEach(function(msg) {
+                // Após 5 segundos, a mensagem desaparece
+                setTimeout(function() {
+                    msg.style.display = 'none';
+                }, 3000); // 5000 milissegundos = 5 segundos
+            });
+        });
+    </script>
 
 </body>
 
