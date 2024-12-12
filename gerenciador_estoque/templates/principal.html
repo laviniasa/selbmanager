@@ -65,18 +65,48 @@
             font-size: 32px;
             margin-bottom: 20px;
         }
+
+        .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50; /* Verde para mensagem de sucesso */
+        }
     </style>
 </head>
 <body>
 
     <section>
+        <!-- Exibição de mensagens de sucesso com flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert" id="flash-message">
+                    {{ messages[0][1] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         <div class="buttons-container">
-
             <a href="{{ url_for('login') }}" class="btn">Login</a>
             <!-- Novo botão para Chamado -->
             <a href="{{ url_for('chamado') }}" class="btn">Chamado</a>
         </div>
     </section>
+
+    <script>
+        // Espera o DOM ser carregado
+        window.onload = function() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                // Após 3 segundos, oculta a mensagem
+                setTimeout(function() {
+                    flashMessage.style.display = 'none';
+                }, 3000); // 3000 milissegundos = 3 segundos
+            }
+        };
+    </script>
+
 </body>
 </html>
-    
