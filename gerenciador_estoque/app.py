@@ -269,8 +269,9 @@ def principal():
     if 'user' not in session:
         return redirect(url_for('login'))  # Se o usuário não estiver autenticado, redireciona para o login
 
-    # Se o usuário estiver autenticado, renderiza a página principal
-    return render_template('principal.html')
+    # Se o usuário estiver autenticado, renderiza a página principal (principal.html)
+    return render_template('principal.html')  # Renderiza a página principal
+
 
 # Rota para login do usuário
 @app.route('/login', methods=['GET', 'POST'])
