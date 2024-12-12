@@ -283,15 +283,17 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+        # Verifica se o usuário e senha estão corretos (simulação)
         if username in usuarios and check_password_hash(usuarios[username], password):
+            # Armazena o nome do usuário na sessão após login bem-sucedido
             session['user'] = username
-            return redirect(url_for('index'))
+            return redirect(url_for('principal'))  # Redireciona para a página principal
 
-        # Se usuário ou senha estiverem incorretos
         flash("Usuário ou senha incorretos!", 'danger')
-        return render_template('login.html')
+        return render_template('login.html')  # Se o login falhar, exibe o formulário novamente
 
-    return render_template('login.html')
+    return render_template('login.html')  # Exibe o formulário de login no método GET
+
 
 
 # Rota para logout do usuário
