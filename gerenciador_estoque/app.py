@@ -463,4 +463,6 @@ def alterar_senha():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Pega a porta da variável de ambiente ou usa a porta 5000 como fallback
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)  # Configura o Flask para escutar em 0.0.0.0 e na porta correta
