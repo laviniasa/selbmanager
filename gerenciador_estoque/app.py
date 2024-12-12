@@ -200,7 +200,7 @@ def solicitacoes():
 @app.route('/')
 def index():
     # Passando os dados de estoque com a função
-    return render_template('index.html', **obter_dados_estoque())
+        return redirect(url_for('principal'))
 
 @app.route('/chamado', methods=['GET'])
 def chamado():
