@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
-from flask import Flask
 
 app = Flask(__name__)
 
@@ -275,7 +273,6 @@ def principal():
     return render_template('principal.html')
 
 
-
 # Rota para login do usuário
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -283,17 +280,15 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        # Verifica se o usuário e senha estão corretos (simulação)
         if username in usuarios and check_password_hash(usuarios[username], password):
-            # Armazena o nome do usuário na sessão após login bem-sucedido
             session['user'] = username
-            return redirect(url_for('principal'))  # Redireciona para a página principal
+            return redirect(url_for('index'))
 
+        # Se usuário ou senha estiverem incorretos
         flash("Usuário ou senha incorretos!", 'danger')
-        return render_template('login.html')  # Se o login falhar, exibe o formulário novamente
+        return render_template('login.html')
 
-    return render_template('login.html')  # Exibe o formulário de login no método GET
-
+    return render_template('login.html')
 
 
 # Rota para logout do usuário
@@ -467,9 +462,5 @@ def alterar_senha():
 
 
 
-# Obtendo a porta da variável de ambiente ou usando 5000 como padrão
-port = int(os.environ.get("PORT", 5000))
-
-# Iniciando o servidor Flask com a porta correta
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=port)  # Aqui a porta é atribuída corretamente
+    app.run(debug=True)
