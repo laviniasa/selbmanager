@@ -7,27 +7,49 @@
     <meta name="keywords" content="login, sistema de gestão">
     <title>Login - Sistema de Gestão</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilos para a mensagem de sucesso */
+        .alert-success {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .alert-danger {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-box">
             <center><h2>Login</h2></center>
-
+        
             <!-- Mensagens de erro ou sucesso -->
-<div class="messages">
-    {% if mensagem_adicao and request.endpoint == 'login' %}
-        <div class="success-message">
-            <span class="icon">&#x2713;</span> {{ mensagem_adicao }}
-        </div>
-    {% endif %}
-    {% if mensagem_erro and request.endpoint == 'login' %}
-        <div class="error-message">
-            <span class="icon">&#x26A0;</span> {{ mensagem_erro }}
-        </div>
-    {% endif %}
-</div>
-
-            <form action="{{ url_for('login') }}" method="POST">
+            <div class="messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <span class="icon">&#x26A0;</span> {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        
+            <form action="/login" method="POST">
                 <div class="input-group">
                     <label for="username">Usuário</label>
                     <input type="text" name="username" id="username" required placeholder="Digite seu usuário">
@@ -41,22 +63,19 @@
                 <div class="form-actions">
                     <input type="submit" value="Entrar">
                 </div>
-            </form>
+            </form>          
         </div>
     </div>
 
     <!-- Script para ocultar a mensagem de erro após 3 segundos -->
     <script>
-        // Espera o DOM ser carregado
         window.onload = function() {
-            // Verifica se existe uma mensagem de erro
-            const errorMessage = document.getElementById('error-message');
-            if (errorMessage) {
-                // Após 3 segundos, oculta a mensagem
+            const alertMessages = document.querySelectorAll('.alert');
+            alertMessages.forEach(function(alertMessage) {
                 setTimeout(function() {
-                    errorMessage.style.display = 'none';
-                }, 3000); // 3000 milissegundos = 3 segundos
-            }
+                    alertMessage.style.display = 'none';
+                }, 3000);
+            });
         };
     </script>
 </body>
