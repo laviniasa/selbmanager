@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from flask import Flask
 
 app = Flask(__name__)
 
@@ -459,5 +461,9 @@ def alterar_senha():
 
 
 
+# Obtendo a porta da variável de ambiente ou usando 5000 como padrão
+port = int(os.environ.get("PORT", 5000))
+
+# Iniciando o servidor Flask com a porta correta
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=port)  # Aqui a porta é atribuída corretamente
