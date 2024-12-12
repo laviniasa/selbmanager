@@ -265,12 +265,15 @@ def visualizar():
 
 @app.route('/principal')
 def principal():
-    # Verifica se o usuário está autenticado na sessão
+    # Verifica se o usuário está autenticado
     if 'user' not in session:
-        return redirect(url_for('login'))  # Se o usuário não estiver autenticado, redireciona para o login
+        print("Usuário não autenticado, redirecionando para login.")  # Debug
+        return redirect(url_for('login'))  # Se não estiver autenticado, redireciona para o login
 
-    # Se o usuário estiver autenticado, renderiza a página principal (principal.html)
-    return render_template('principal.html')  # Renderiza a página principal
+    # Se estiver autenticado, renderiza a página principal
+    print("Usuário autenticado, mostrando a página principal.")  # Debug
+    return render_template('principal.html')
+
 
 
 # Rota para login do usuário
