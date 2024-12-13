@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f4f4f4; /* Cor de fundo da página */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,8 +20,8 @@
         }
 
         header {
-            background-color: #333;
-            color: white;
+            background-color: #f4f4f4;  /* Fundo igual ao da página */
+            color: #333;  /* Cor do texto ajustada */
             padding: 10px 0;
             width: 100%;
             text-align: center;
@@ -74,9 +75,22 @@
             color: white;
             background-color: #4CAF50; /* Verde para mensagem de sucesso */
         }
+
+        /* Logo */
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+            background-color: transparent; /* Garante fundo transparente */
+        }
     </style>
 </head>
+
 <body>
+
+    <header>
+        <!-- Adicionando a logo no topo -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+    </header>
 
     <section>
         <!-- Exibição de mensagens de sucesso com flash -->
@@ -87,7 +101,7 @@
                 </div>
             {% endif %}
         {% endwith %}
-        
+
         <div class="buttons-container">
             <a href="{{ url_for('login') }}" class="btn">Login</a>
             <!-- Novo botão para Chamado -->
@@ -97,11 +111,11 @@
 
     <script>
         // Espera o DOM ser carregado
-        window.onload = function() {
+        window.onload = function () {
             const flashMessage = document.getElementById('flash-message');
             if (flashMessage) {
                 // Após 3 segundos, oculta a mensagem
-                setTimeout(function() {
+                setTimeout(function () {
                     flashMessage.style.display = 'none';
                 }, 3000); // 3000 milissegundos = 3 segundos
             }
@@ -109,4 +123,5 @@
     </script>
 
 </body>
+
 </html>
