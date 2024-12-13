@@ -54,11 +54,17 @@
             color: #ffffff;
             border: none;
             border-radius: 5px;
-            transition: all 0.3s ease;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
         }
 
         .btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            background-color: #d87a00; /* Cor mais suave */
+        }
+
+        .btn:active {
+            transform: scale(1.02);
             background-color: #e88d00;
         }
 
@@ -121,7 +127,6 @@
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #e2e2e2;">
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- Título "Solicitações" no canto esquerdo -->
                 <li class="nav-item active">
                     <a class="navbar-brand" href="#">Solicitações</a>
                 </li>
@@ -139,26 +144,38 @@
             </ul>
         </div>
     </nav>
-    
 
     <!-- Mensagens de feedback -->
     {% with mensagens = get_flashed_messages(with_categories=true) %}
         {% if mensagens %}
-        <div class="alert alert-{{ mensagens[0][0] }}">
+        <div class="alert alert-{{ mensagens[0][0] }} alert-dismissible fade show" role="alert">
             {{ mensagens[0][1] }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         {% endif %}
     {% endwith %}
 
     <!-- Formulário para Solicitação -->
-    <form action="{{ url_for('solicitacoes') }}" method="POST">
+    <form id="solicitacaoForm" action="{{ url_for('solicitacoes') }}" method="POST">
+        <h2 class="titulo-solicitacoes">Registrar Solicitação de Impressão</h2>
+
         <div class="form-group">
             <label for="tipo_impressao">Tipo de Impressão</label>
-            <select class="form-control" id="tipo_impressao" name="tipo_impressao" required>
+            <select class="form-control" id="tipo_impressao" name="tipo_impressao" required onchange="toggleQuantidadeField()">
+                <option value="nao_desejo_impressao">Não desejo impressão</option>
                 <option value="preto_e_branco">Preto e Branco</option>
                 <option value="colorido">Colorido</option>
             </select>
         </div>
+
+        <!-- Campo Quantidade de Impressões que será mostrado quando o tipo de impressão for selecionado -->
+        <div class="form-group" id="quantidade-group" style="display: none;">
+            <label for="quantidade">Quantidade de Impressões</label>
+            <input type="number" class="form-control" id="quantidade" name="quantidade" min="1">
+        </div>
+
         <div class="form-group">
             <label for="plastificacao">Plastificação</label>
             <div class="form-check">
@@ -166,6 +183,7 @@
                 <label class="form-check-label" for="plastificacao">Sim</label>
             </div>
         </div>
+
         <div class="form-group">
             <label for="encadernacao">Encadernação</label>
             <div class="form-check">
@@ -173,6 +191,7 @@
                 <label class="form-check-label" for="encadernacao">Sim</label>
             </div>
         </div>
+
         <div class="form-group">
             <label for="refilagem">Refilagem</label>
             <div class="form-check">
@@ -180,19 +199,18 @@
                 <label class="form-check-label" for="refilagem">Sim</label>
             </div>
         </div>
-        <div class="form-group">
-            <label for="quantidade">Quantidade de Impressões</label>
-            <input type="number" class="form-control" id="quantidade" name="quantidade" required min="1">
-        </div>
+
         <div class="form-group">
             <label for="solicitante">Solicitante</label>
             <input type="text" class="form-control" id="solicitante" name="solicitante" required>
         </div>
+
         <div class="form-group">
             <label for="departamento">Departamento</label>
             <input type="text" class="form-control" id="departamento" name="departamento" required>
         </div>
-        <button type="submit" class="btn">Registrar Solicitação</button>
+
+        <button type="submit" class="btn btn-block">Registrar Solicitação</button>
     </form>
 
     <hr>
@@ -200,7 +218,7 @@
     <!-- Listagem das Solicitações -->
     <h3 class="mt-4" style="color: #333;">Solicitações Registradas</h3>
     {% if solicitacoes %}
-    <table class="table table-bordered">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Data</th>
@@ -228,11 +246,32 @@
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
+{% else %}
     <p class="alert alert-warning">Não há solicitações registradas.</p>
-    {% endif %}
+{% endif %}
 
-    <!-- Scripts -->
+
+
+    <script>
+        // Função para mostrar ou esconder o campo de quantidade de impressões
+        function toggleQuantidadeField() {
+            var tipoImpressao = document.getElementById('tipo_impressao').value;
+            var quantidadeGroup = document.getElementById('quantidade-group');
+
+            if (tipoImpressao === "nao_desejo_impressao") {
+                quantidadeGroup.style.display = 'none';
+                // Remove a quantidade do formulário
+                document.getElementById('quantidade').removeAttribute('required');
+            } else {
+                quantidadeGroup.style.display = 'block';
+                document.getElementById('quantidade').setAttribute('required', 'required');
+            }
+        }
+
+        // Inicializa a exibição correta do campo de quantidade ao carregar a página
+        window.onload = toggleQuantidadeField;
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
