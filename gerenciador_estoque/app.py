@@ -173,34 +173,66 @@ solicitacoes_impressao = SolicitacaoImpressao()
 
 
 # Rota para visualizar e adicionar solicitações de impressão
+solicitacoes_db = []
+
 @app.route('/solicitacoes', methods=['GET', 'POST'])
 def solicitacoes():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
     if request.method == 'POST':
         tipo_impressao = request.form['tipo_impressao']
-        plastificacao = 'sim' if 'plastificacao' in request.form else 'não'
-        encadernacao = 'sim' if 'encadernacao' in request.form else 'não'
-        refilagem = 'sim' if 'refilagem' in request.form else 'não'
-        quantidade = int(request.form['quantidade'])
+        plastificacao = 'plastificacao' in request.form
+        encadernacao = 'encadernacao' in request.form
+        refilagem = 'refilagem' in request.form
         solicitante = request.form['solicitante']
         departamento = request.form['departamento']
 
-        if quantidade <= 0:
-            flash('A quantidade de cópias deve ser maior que zero.', 'danger')
-            return redirect(url_for('solicitacoes'))
+        # Se a opção "Não desejo impressão" for escolhida, quantidade não é necessária
+        if tipo_impressao == 'nao_desejo_impressao':
+            quantidade = None  # Não definimos a quantidade
+        else:
+            # Caso contrário, pegamos a quantidade
+            quantidade = request.form.get('quantidade')
+            if not quantidade or int(quantidade) <= 0:
+                flash('Quantidade é obrigatória', 'danger')
+                return redirect(url_for('solicitacoes'))  # Retorna com erro se a quantidade não for válida
+            quantidade = int(quantidade)  # Converte para inteiro
 
-        solicitacoes_impressao.adicionar(tipo_impressao, plastificacao, encadernacao, refilagem, quantidade, solicitante, departamento)
-        flash('Solicitação de impressão registrada com sucesso!', 'success')
+        # Criar dicionário com a solicitação
+        solicitacao = {
+            'data': '2024-12-13',  # Você pode usar o datetime aqui para obter a data atual
+            'tipo_impressao': tipo_impressao,
+            'plastificacao': 'Sim' if plastificacao else 'Não',
+            'encadernacao': 'Sim' if encadernacao else 'Não',
+            'refilagem': 'Sim' if refilagem else 'Não',
+            'quantidade': quantidade if quantidade else 'Não aplicável',
+            'solicitante': solicitante,
+            'departamento': departamento
+        }
+
+        # Armazenar a solicitação na lista (ou banco de dados)
+        solicitacoes_db.append(solicitacao)
+
+        # Exibir uma mensagem de sucesso
+        flash('Solicitação registrada com sucesso!', 'success')
+
+        # Redireciona para a página de solicitação para mostrar a tabela de dados
         return redirect(url_for('solicitacoes'))
 
-    return render_template('solicitacoes.html', solicitacoes=solicitacoes_impressao.consultar())
+    # Renderiza a página com as solicitações armazenadas na lista
+    return render_template('solicitacoes.html', solicitacoes=solicitacoes_db)
 
+
+
+#teste
 @app.route('/')
 def index():
-    # Passando os dados de estoque com a função
-        return redirect(url_for('principal'))
+    if 'user' in session:  # Se o usuário estiver logado
+        return render_template('principal.html')  # Renderiza a página principal.html
+    return render_template('principal.html')  # Caso contrário, também renderiza a principal.html
+
+@app.route('/index')
+def home():
+    return render_template('index.html')  # Página principal do sistema
+
 
 @app.route('/chamado', methods=['GET'])
 def chamado():
@@ -263,14 +295,12 @@ def visualizar():
 
 @app.route('/principal')
 def principal():
-    # Verifica se o usuário está autenticado
-    if 'user' not in session:
-        print("Usuário não autenticado, redirecionando para login.")  # Debug
-        return redirect(url_for('login'))  # Se não estiver autenticado, redireciona para o login
+    if 'user' not in session:  # Se o usuário não estiver logado
+        return redirect(url_for('login'))  # Redireciona para a página de login
 
-    # Se estiver autenticado, renderiza a página principal
-    print("Usuário autenticado, mostrando a página principal.")  # Debug
+    # Se o usuário estiver autenticado, renderiza a página principal
     return render_template('principal.html')
+
 
 
 # Rota para login do usuário
@@ -280,15 +310,17 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+        # Verifica se o usuário existe e se a senha está correta
         if username in usuarios and check_password_hash(usuarios[username], password):
-            session['user'] = username
-            return redirect(url_for('index'))
+            session['user'] = username  # Guarda o usuário na sessão
+            flash('Login bem-sucedido!', 'success')
+            return redirect(url_for('index'))  # Redireciona para a própria página index, que renderiza index.html
+        else:
+            flash('Usuário ou senha inválidos!', 'danger')
+            return render_template('login.html')  # Exibe novamente a página de login, com mensagem de erro
+    
+    return render_template('login.html')  # Se for um GET, apenas exibe o formulário de login
 
-        # Se usuário ou senha estiverem incorretos
-        flash("Usuário ou senha incorretos!", 'danger')
-        return render_template('login.html')
-
-    return render_template('login.html')
 
 
 # Rota para logout do usuário
@@ -405,6 +437,9 @@ def excluir_chamado(id):
 
 @app.route('/cadastrar')
 def cadastrar():
+    if 'user' not in session or session['user'] != 'admin':  # Verifica se o usuário está logado e é o 'admin'
+        flash('Acesso negado. Você não tem permissão para acessar essa página.', 'danger')
+        return redirect(url_for('index'))  # Redireciona para a página principal ou qualquer outra página
     return render_template('cadastrar.html')
 
 # Rota para cadastrar novos usuários
@@ -463,6 +498,4 @@ def alterar_senha():
 
 
 if __name__ == '__main__':
-    # Pega a porta da variável de ambiente ou usa a porta 5000 como fallback
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)  # Configura o Flask para escutar em 0.0.0.0 e na porta correta
+    app.run(debug=True)
