@@ -298,3 +298,16 @@ form {
 .icon {
     margin-right: 8px;
 }
+.logo {
+    max-width: 200px;
+    margin-bottom: 20px;
+    background-color: transparent; /* Garante que o fundo seja transparente */
+}
+header {
+    background-color: #f4f4f4; /* Fundo igual ao da página */
+    color: #333;  /* Cor do texto ajustada */
+    padding: 10px 0;
+    width: 100%;
+    text-align: center;
+}
+
