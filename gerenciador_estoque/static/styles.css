@@ -1,4 +1,4 @@
-/* Resetando margens e paddings, mas de forma mais eficiente */
+/* Resetando margens e paddings de forma mais eficiente */
 html, body {
     margin: 0;
     padding: 0;
@@ -116,6 +116,28 @@ input[type="submit"] {
     table {
         overflow-x: auto;
     }
+
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 2.2em;
+    }
+
+    form {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    input, select, textarea {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    .btn, .form-actions input {
+        width: 100%;
+    }
 }
 
 /* Tabelas */
@@ -143,6 +165,7 @@ table tr:nth-child(even) {
 table tr:hover {
     background-color: #eaf0f1;
 }
+
 /* Caixa maior que contém tudo */
 .login-container {
     display: flex;
@@ -282,6 +305,8 @@ form {
         transform: translateY(0);
     }
 }
+
+/* Alertas */
 .alert {
     padding: 10px;
     margin: 10px 0;
@@ -298,11 +323,15 @@ form {
 .icon {
     margin-right: 8px;
 }
+
+/* Logo */
 .logo {
     max-width: 200px;
     margin-bottom: 20px;
     background-color: transparent; /* Garante que o fundo seja transparente */
 }
+
+/* Cabeçalho */
 header {
     background-color: #f4f4f4; /* Fundo igual ao da página */
     color: #333;  /* Cor do texto ajustada */
@@ -310,4 +339,3 @@ header {
     width: 100%;
     text-align: center;
 }
-
