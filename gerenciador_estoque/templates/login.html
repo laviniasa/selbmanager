@@ -8,75 +8,143 @@
     <title>Login - Sistema de Gestão</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        /* Estilos para a mensagem de sucesso */
-        .alert-success {
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+        }
+
+        input[type="submit"] {
             background-color: #4CAF50;
             color: white;
-            padding: 15px;
+            padding: 10px;
+            border: none;
             border-radius: 5px;
+            width: 100%;
             font-size: 16px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        .alert-danger {
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos para o botão Voltar */
+        .back-btn {
+            display: block;
+            text-align: center;
             background-color: #f44336;
             color: white;
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
+            text-decoration: none;
             font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #e53935;
+            transform: translateY(-2px);
+        }
+
+        .back-btn:active {
+            background-color: #d32f2f;
+            transform: translateY(1px);
+        }
+
+        /* Mensagens de alerta */
+        .alert {
+            background-color: #ffdddd;
+            color: #a94442;
+            padding: 10px;
+            border: 1px solid #f2dede;
+            border-radius: 5px;
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-box">
-            <center><h2>Login</h2></center>
-        
-            <!-- Mensagens de erro ou sucesso -->
+            <h2>Login</h2>
+
+            <!-- Mensagens de alerta -->
             <div class="messages">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
-                                <span class="icon">&#x26A0;</span> {{ message }}
-                            </div>
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
             </div>
-        
+
+            <!-- Formulário de login -->
             <form action="/login" method="POST">
                 <div class="input-group">
                     <label for="username">Usuário</label>
-                    <input type="text" name="username" id="username" required placeholder="Digite seu usuário">
+                    <input type="text" name="username" id="username" placeholder="Digite seu usuário" required>
                 </div>
-                
                 <div class="input-group">
                     <label for="password">Senha</label>
-                    <input type="password" name="password" id="password" required placeholder="Digite sua senha">
+                    <input type="password" name="password" id="password" placeholder="Digite sua senha" required>
                 </div>
-                
                 <div class="form-actions">
                     <input type="submit" value="Entrar">
                 </div>
-            </form>          
+            </form>
+
+            <!-- Botão Voltar -->
+            <a href="principal.html" class="back-btn">Voltar</a>
         </div>
     </div>
-
-    <!-- Script para ocultar a mensagem de erro após 3 segundos -->
-    <script>
-        window.onload = function() {
-            const alertMessages = document.querySelectorAll('.alert');
-            alertMessages.forEach(function(alertMessage) {
-                setTimeout(function() {
-                    alertMessage.style.display = 'none';
-                }, 3000);
-            });
-        };
-    </script>
 </body>
 </html>
