@@ -224,14 +224,15 @@ def solicitacoes():
 
 #teste
 @app.route('/')
-def index():
-    if 'user' in session:  # Se o usuário estiver logado
-        return render_template('principal.html')  # Renderiza a página principal.html
-    return render_template('principal.html')  # Caso contrário, também renderiza a principal.html
+def home():
+    return render_template('principal.html')  # A primeira página a ser acessada é principal.html
 
 @app.route('/index')
-def home():
-    return render_template('index.html')  # Página principal do sistema
+def index():
+    if 'user' in session:  # Verifica se o usuário está logado
+        return render_template('index.html')  # Redireciona para index.html
+    else:
+        return redirect(url_for('login'))  # Se não estiver logado, redireciona para login
 
 
 @app.route('/chamado', methods=['GET'])
@@ -312,14 +313,15 @@ def login():
 
         # Verifica se o usuário existe e se a senha está correta
         if username in usuarios and check_password_hash(usuarios[username], password):
-            session['user'] = username  # Guarda o usuário na sessão
+            session['user'] = username  # Armazena o nome de usuário na sessão
             flash('Login bem-sucedido!', 'success')
-            return redirect(url_for('index'))  # Redireciona para a própria página index, que renderiza index.html
+            return redirect(url_for('index'))  # Redireciona para index.html após o login
         else:
-            flash('Usuário ou senha inválidos!', 'danger')
-            return render_template('login.html')  # Exibe novamente a página de login, com mensagem de erro
+            flash('Usuário ou senha inválidos!', 'danger')  # Mensagem de erro
+            return render_template('login.html')  # Exibe novamente a página de login com a mensagem de erro
     
-    return render_template('login.html')  # Se for um GET, apenas exibe o formulário de login
+    return render_template('login.html')  # Exibe o formulário de login se for um GET
+
 
 
 
