@@ -4,6 +4,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
+toners = []
+
+# Exemplo de lista para armazenar as retiradas
+registros_papel = []
+
 usuarios = {}
 
 # Definindo uma chave secreta para sessão
@@ -97,7 +102,10 @@ class EstoqueDePapel:
     def precisa_reposicao(self):
         """Verifica se o estoque de papel precisa ser reabastecido"""
         return self.estoque <= self.estoque_minimo
-
+    
+    def consultar_estoque_atual(self):
+        """Retorna o estoque total de papel (estoque atual de papel)."""
+        return self.estoque
 
 # Classe para gerenciamento do estoque de toner
 class EstoqueDeToner:
@@ -166,6 +174,7 @@ def obter_dados_estoque():
     }
 
 
+
 # Instanciando objetos de estoque e solicitações
 estoque_papel = EstoqueDePapel()
 estoque_toner = EstoqueDeToner()
@@ -230,7 +239,14 @@ def home():
 @app.route('/index')
 def index():
     if 'user' in session:  # Verifica se o usuário está logado
-        return render_template('index.html')  # Redireciona para index.html
+        registros_toner = estoque_toner.registros_estoque()
+        registros_papel = estoque_papel.registros_estoque()
+        estoque_atual_papel = estoque_papel.consultar_estoque_atual()  # Chama o método correto para o estoque atual
+        
+        return render_template('index.html', 
+                               registros_toner=registros_toner, 
+                               registros_papel=registros_papel, 
+                               estoque_atual_papel=estoque_atual_papel)
     else:
         return redirect(url_for('login'))  # Se não estiver logado, redireciona para login
 
@@ -345,29 +361,26 @@ def adicionar_papel():
 
 @app.route('/retirar_papel', methods=['POST'])
 def retirar_papel():
-    try:
-        # Obtém os dados do formulário
+    if request.method == 'POST':
+        # Obtenha os dados do formulário
         quantidade = int(request.form['quantidade'])
         local = request.form['local']
-
-        # Verifica se a quantidade é válida (positiva)
-        if quantidade <= 0:
-            flash("A quantidade de papel a ser retirada deve ser maior que zero.", 'danger')
-            return redirect(url_for('index'))
-
-        # Tenta retirar a quantidade do estoque
-        if not estoque_papel.retirar(quantidade, local):
-            flash("Estoque insuficiente para retirar o papel!", 'danger')
-            return redirect(url_for('index'))
-
-        # Exibe a mensagem de sucesso
-        flash(f"{quantidade} resmas de papel retiradas do estoque.", 'success')
+        data = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Data e hora atual
+        
+        # Armazene o registro de retirada
+        if estoque_papel.retirar(quantidade, local):
+            registros_papel.append({
+                'quantidade': quantidade,
+                'local': local,
+                'data': data
+            })
+            flash('Retirada de papel realizada com sucesso!', 'success')
+        else:
+            flash('Erro ao retirar papel, quantidade insuficiente!', 'danger')
+        
+        # Redirecionar para a página onde o histórico será exibido
         return redirect(url_for('index'))
 
-    except ValueError:
-        # Caso o valor da quantidade não seja um número válido
-        flash("Por favor, insira um número válido para a quantidade de papel.", 'danger')
-        return redirect(url_for('index'))
 
 
 @app.route('/adicionar_toner', methods=['POST'])
@@ -393,13 +406,13 @@ def retirar_toner():
     quantidade = int(request.form['quantidade'])
     local = request.form['local']
 
+    # Realiza a retirada e registra no estoque de toner
     if estoque_toner.retirar(marca, tipo, quantidade, local):
         flash(f"{quantidade} toners da marca {marca} retirados do estoque.", 'success')
     else:
         flash("Erro ao retirar toner do estoque.", 'danger')
 
     return redirect(url_for('index'))
-
 
 
 # Rota para cadastro de novos usuários
