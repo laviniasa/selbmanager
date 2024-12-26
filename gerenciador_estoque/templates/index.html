@@ -120,9 +120,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/visualizar">Chamados</a>
                 </li>
-                
                 <li class="nav-item">
                     <a class="nav-link" href="/cadastrar">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/historico">Histórico de Retiradas</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/principal">Sair</a>
@@ -131,6 +133,7 @@
         </ul>
     </div>
 </nav>
+
 
 
 
@@ -159,13 +162,13 @@
 
         <!-- Formulários -->
         <div class="form-container">
-    <h3>Adicionar Resmas de Papel</h3>
-    <form method="POST" action="{{ url_for('adicionar_papel') }}">
-        <label for="quantidade">Quantidade de Resmas:</label>
-        <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-        <button type="submit" class="btn mt-2">Adicionar Papel</button>
-    </form>
-</div>
+                <h3>Adicionar Resmas de Papel</h3>
+                <form method="POST" action="{{ url_for('adicionar_papel') }}">
+                    <label for="quantidade">Quantidade de Resmas:</label>
+                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+                    <button type="submit" class="btn mt-2">Adicionar Papel</button>
+                </form>
+            </div>
             <div class="form-container">
                 <h3>Retirar Resmas de Papel</h3>
                 <form method="POST" action="{{ url_for('retirar_papel') }}">
@@ -182,7 +185,7 @@
                     <label for="marca">Marca:</label>
                     <input type="text" name="marca" id="marca" class="form-control" required>
             
-                    <label for="tipo">Tipo:</label>
+                    <label for="tipo">SELB:</label>
                     <input type="text" name="tipo" id="tipo" class="form-control" required>
             
                     <label for="quantidade">Quantidade:</label>
@@ -201,16 +204,9 @@
                     <label for="marca">Marca:</label>
                     <input type="text" name="marca" id="marca" class="form-control" required>
             
-                    <label for="tipo">Tipo:</label>
+                    <label for="tipo">  SELB:</label>
                     <!-- Usando <select> com a opção de escrever -->
                     <input list="tipos-toner" name="tipo" id="tipo" class="form-control" required>
-                    <datalist id="tipos-toner">
-                        <!-- Aqui você pode preencher com os tipos de toner disponíveis -->
-                        <option value="Toner A">
-                        <option value="Toner B">
-                        <option value="Toner C">
-                        <!-- Adicione mais opções conforme necessário -->
-                    </datalist>
             
                     <label for="quantidade">Quantidade:</label>
                     <input type="number" name="quantidade" id="quantidade" class="form-control" required>
@@ -219,78 +215,64 @@
                     <input type="text" name="local" id="local" class="form-control" required>
             
                     <button type="submit" class="btn mt-2">Retirar Toner</button>
+                    <!-- Botão visualizar -->
+                    <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#tonerModal">VER</button>
                 </form>
             </div>
-            
+            <!-- Modal para exibir toners disponíveis -->
+            <div class="modal fade" id="tonerModal" tabindex="-1" role="dialog" aria-labelledby="tonerModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tonerModalLabel">Toneres Disponíveis</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Tabela exibindo toners cadastrados -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Marca</th>
+                                        <th>Tipo (SELB)</th>
+                                        <th>Quantidade</th>
+                                        <th>Data de Validade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for toner in toners_disponiveis %}
+                                        <tr>
+                                            <td>{{ toner.marca }}</td>
+                                            <td>{{ toner.tipo }}</td>
+                                            <td>{{ toner.quantidade }}</td>
+                                            <td>{{ toner.validade }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">Nenhum toner disponível.</td>
+                                        </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Histórico de Retiradas -->
-        <section>
-            <h3>Histórico de Retiradas de Papel</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Marca</th>
-                        <th>Tipo</th>
-                        <th>Quantidade</th>
-                        <th>Local</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for registro in registros_papel %}
-                    <tr>
-                        <td>{{ registro['data'] }}</td>
-                        <td>{{ registro['marca'] }}</td>
-                        <td>{{ registro['tipo'] }}</td>
-                        <td>{{ registro['quantidade'] }}</td>
-                        <td>{{ registro['local'] }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center">Nenhum registro de papel encontrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-               
+       
 
-            <h3>Histórico de Retiradas de Toner</h3>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Marca</th>
-                    <th>Tipo</th>
-                    <th>Quantidade</th>
-                    <th>Local</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for registro in registros_toner %}
-                <tr>
-                    <td>{{ registro['data'] }}</td>
-                    <td>{{ registro['marca'] }}</td>
-                    <td>{{ registro['tipo'] }}</td>
-                    <td>{{ registro['quantidade'] }}</td>
-                    <td>{{ registro['local'] }}</td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" class="text-center">Nenhum registro de toner encontrado.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>        
+ 
+<!-- Scripts Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery Completo -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script> <!-- Popper.js -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
 
-        </section>
-
-    </div>
-
-    <!-- Scripts Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         // Verifica se há mensagens de flash
