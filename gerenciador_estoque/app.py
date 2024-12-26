@@ -45,6 +45,8 @@ def adicionar_chamado(chamado):
     """Adiciona um chamado à lista de chamados"""
     chamados.append(chamado)
 
+    
+
 # Classe que gerencia as solicitações de impressão
 class SolicitacaoImpressao:
     def __init__(self):
@@ -159,9 +161,6 @@ class EstoqueDeToner:
         """Verifica se o estoque de toner precisa ser reabastecido"""
         return len(self.estoque) <= self.estoque_minimo
 
-
-
-
 # Função auxiliar para obter dados de estoque de papel e toner
 def obter_dados_estoque():
     return {
@@ -239,8 +238,8 @@ def home():
 @app.route('/index')
 def index():
     if 'user' in session:  # Verifica se o usuário está logado
-        registros_toner = estoque_toner.registros_estoque()
-        registros_papel = estoque_papel.registros_estoque()
+        registros_toner = estoque_toner.registros_estoque()  # Obtém os registros de toner
+        registros_papel = estoque_papel.registros_estoque()  # Obtém os registros de papel
         estoque_atual_papel = estoque_papel.consultar_estoque_atual()  # Chama o método correto para o estoque atual
         
         return render_template('index.html', 
@@ -249,6 +248,19 @@ def index():
                                estoque_atual_papel=estoque_atual_papel)
     else:
         return redirect(url_for('login'))  # Se não estiver logado, redireciona para login
+
+    
+# Rota para a página de Histórico
+@app.route('/historico')
+def historico():
+    # Obtém os registros de papel diretamente do estoque de papel
+    registros_papel = estoque_papel.registros_estoque()
+    
+    # Obtém os registros de toner diretamente do estoque de toner
+    registros_toner = estoque_toner.registros_estoque()
+    
+    return render_template('historico.html', registros_papel=registros_papel, registros_toner=registros_toner)
+
 
 
 @app.route('/chamado', methods=['GET'])
@@ -509,6 +521,7 @@ def alterar_senha():
     usuarios[username] = generate_password_hash(new_password)
     flash("Senha alterada com sucesso!", 'success')
     return redirect(url_for('index'))
+
 
 
 
