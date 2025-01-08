@@ -55,12 +55,12 @@ class SolicitacaoImpressao:
     def adicionar(self, tipo_impressao, plastificacao, encadernacao, refilagem, quantidade, solicitante, departamento):
         """Adiciona uma nova solicitação ao sistema"""
         solicitacao = {
-            'data': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+            'data': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),  # Atualiza para a data atual,
             'tipo_impressao': tipo_impressao,
-            'plastificacao': plastificacao,
-            'encadernacao': encadernacao,
-            'refilagem': refilagem,
-            'quantidade': quantidade,
+            'plastificacao': 'Sim' if plastificacao else 'Não',
+            'encadernacao': 'Sim' if encadernacao else 'Não',
+            'refilagem': 'Sim' if refilagem else 'Não',
+            'quantidade': quantidade if quantidade else 'Não aplicável',
             'solicitante': solicitante,
             'departamento': departamento
         }
@@ -119,6 +119,11 @@ class EstoqueDeToner:
     def adicionar(self, marca, tipo, quantidade, validade):
         """Adiciona uma quantidade de toner ao estoque"""
         if quantidade > 0:
+            for toner in self.estoque:
+                if toner['marca'] == marca and toner['tipo'] == tipo:
+                    toner['quantidade'] += quantidade  # Soma a quantidade ao toner existente
+                    return True  # Retorna True se a adição for bem-sucedida
+            # Se não existir o toner, adiciona um novo
             toner = {
                 'marca': marca,
                 'tipo': tipo,
@@ -128,7 +133,7 @@ class EstoqueDeToner:
             self.estoque.append(toner)  # Adiciona o toner ao estoque
             return True  # Retorna True se a adição for bem-sucedida
         return False  # Retorna False se a quantidade for inválida (<= 0)
-
+    
     def retirar(self, marca, tipo, quantidade, local):
         """Retira uma quantidade do estoque de toner, registrando a operação"""
         if quantidade > 0:
@@ -172,16 +177,30 @@ def obter_dados_estoque():
         'precisa_reposicao_toner': estoque_toner.precisa_reposicao()
     }
 
-
-
 # Instanciando objetos de estoque e solicitações
-estoque_papel = EstoqueDePapel()
+estoque_papel = EstoqueDePapel()  # Certifique-se de ter a classe EstoqueDePapel definida também
 estoque_toner = EstoqueDeToner()
-solicitacoes_impressao = SolicitacaoImpressao()
-
+solicitacoes_impressao = SolicitacaoImpressao()  # Certifique-se de ter a classe SolicitacaoImpressao definida
 
 # Rota para visualizar e adicionar solicitações de impressão
 solicitacoes_db = []
+
+
+@app.route('/visualizar')
+def visualizar():
+    # Recuperando o chamado da sessão
+    chamado_data = session.get('chamado')
+
+    if chamado_data:
+        chamado = Chamado(**chamado_data)
+        adicionar_chamado(chamado)  # Adiciona o chamado na lista global
+
+        # Após adicionar, remover o chamado da sessão para evitar duplicação
+        session.pop('chamado', None)
+
+    # Exibe a lista de chamados e mensagens de flash
+    return render_template('visualizar.html', chamados=chamados)
+
 
 @app.route('/solicitacoes', methods=['GET', 'POST'])
 def solicitacoes():
@@ -206,7 +225,7 @@ def solicitacoes():
 
         # Criar dicionário com a solicitação
         solicitacao = {
-            'data': '2024-12-13',  # Você pode usar o datetime aqui para obter a data atual
+            'data': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
             'tipo_impressao': tipo_impressao,
             'plastificacao': 'Sim' if plastificacao else 'Não',
             'encadernacao': 'Sim' if encadernacao else 'Não',
@@ -238,30 +257,36 @@ def home():
 @app.route('/index')
 def index():
     if 'user' in session:  # Verifica se o usuário está logado
-        registros_toner = estoque_toner.registros_estoque()  # Obtém os registros de toner
+        # Consulta os dados de estoque
+        registros_toner = estoque_toner.consultar()  # Obtém os dados do estoque de toner
         registros_papel = estoque_papel.registros_estoque()  # Obtém os registros de papel
-        estoque_atual_papel = estoque_papel.consultar_estoque_atual()  # Chama o método correto para o estoque atual
+        estoque_atual_papel = estoque_papel.consultar_estoque_atual()  # Estoque atual de papel
         
         return render_template('index.html', 
                                registros_toner=registros_toner, 
                                registros_papel=registros_papel, 
                                estoque_atual_papel=estoque_atual_papel)
     else:
-        return redirect(url_for('login'))  # Se não estiver logado, redireciona para login
+        return redirect(url_for('login'))  # Redireciona se não estiver logado
 
-    
-# Rota para a página de Histórico
-@app.route('/historico')
+
+def obter_registros_solicitacoes():
+    """Retorna os registros de solicitações armazenados na lista solicitacoes_db."""
+    return solicitacoes_db
+
+
+@app.route('/historico', methods=['GET'])
 def historico():
-    # Obtém os registros de papel diretamente do estoque de papel
     registros_papel = estoque_papel.registros_estoque()
-    
-    # Obtém os registros de toner diretamente do estoque de toner
     registros_toner = estoque_toner.registros_estoque()
+    registros_solicitacoes = obter_registros_solicitacoes()
     
-    return render_template('historico.html', registros_papel=registros_papel, registros_toner=registros_toner)
-
-
+    return render_template(
+        'historico.html', 
+        registros_papel=registros_papel, 
+        registros_toner=registros_toner, 
+        solicitacoes=registros_solicitacoes
+    )
 
 @app.route('/chamado', methods=['GET'])
 def chamado():
@@ -270,57 +295,27 @@ def chamado():
 
 @app.route('/processar_chamado', methods=['POST'])
 def processar_chamado():
-    # Pegando os dados do formulário
     nome = request.form.get('nome')
     setor = request.form.get('setor')
     celular = request.form.get('celular')
     acao = request.form.get('acao')
-
-    # Coletando as informações adicionais dependendo da ação escolhida
     chamado = None
 
     if acao == 'solicitar_material':
         material = request.form.get('material')
         quantidade = request.form.get('quantidade') if 'quantidade' in request.form else None
         chamado = Chamado(nome=nome, setor=setor, celular=celular, acao=acao, material=material, quantidade=quantidade)
-
     elif acao == 'relatar_problema':
         problema = request.form.get('problema')
         descricao = request.form.get('descricao') if 'descricao' in request.form else None
         chamado = Chamado(nome=nome, setor=setor, celular=celular, acao=acao, problema=problema, descricao=descricao)
 
-    # Armazenando o chamado na sessão temporariamente
-    session['chamado'] = {
-        'nome': chamado.nome,
-        'setor': chamado.setor,
-        'celular': chamado.celular,
-        'acao': chamado.acao,
-        'material': chamado.material,
-        'quantidade': chamado.quantidade,
-        'problema': chamado.problema,
-        'descricao': chamado.descricao
-    }
+    if chamado:
+        adicionar_chamado(chamado)  # Adiciona o chamado à lista global
 
-    # Flash message para informar sucesso
     flash('Chamado enviado com sucesso, aguarde para ser atendido!', 'success')
-
-    # Redireciona para a página principal
     return redirect(url_for('principal'))
 
-@app.route('/visualizar')
-def visualizar():
-    # Recuperando o chamado da sessão
-    chamado_data = session.get('chamado')
-
-    if chamado_data:
-        chamado = Chamado(**chamado_data)
-        adicionar_chamado(chamado)  # Adiciona o chamado na lista global
-
-        # Após adicionar, remover o chamado da sessão para evitar duplicação
-        session.pop('chamado', None)
-
-    # Exibe a lista de chamados e mensagens de flash
-    return render_template('visualizar.html', chamados=chamados)
 
 @app.route('/principal')
 def principal():
@@ -329,8 +324,6 @@ def principal():
 
     # Se o usuário estiver autenticado, renderiza a página principal
     return render_template('principal.html')
-
-
 
 # Rota para login do usuário
 @app.route('/login', methods=['GET', 'POST'])
@@ -349,8 +342,6 @@ def login():
             return render_template('login.html')  # Exibe novamente a página de login com a mensagem de erro
     
     return render_template('login.html')  # Exibe o formulário de login se for um GET
-
-
 
 
 # Rota para logout do usuário
@@ -397,17 +388,19 @@ def retirar_papel():
 
 @app.route('/adicionar_toner', methods=['POST'])
 def adicionar_toner():
-    marca = request.form['marca']
-    tipo = request.form['tipo']
-    quantidade = int(request.form['quantidade'])
-    validade = request.form['validade']  # Validando o campo de data
+    if request.method == 'POST':
+        marca = request.form['marca']
+        tipo = request.form['tipo']
+        quantidade = int(request.form['quantidade'])
+        validade = request.form['validade']
 
-    if estoque_toner.adicionar(marca, tipo, quantidade, validade):  # Chama o método de adicionar no estoque
-        flash(f"{quantidade} toners da marca {marca} adicionados ao estoque.", 'success')  # Exibe sucesso
-    else:
-        flash("Erro ao adicionar toner ao estoque.", 'danger')  # Exibe erro se falhou
+        # Adiciona o toner ao estoque
+        if estoque_toner.adicionar(marca, tipo, quantidade, validade):
+            flash("Toner adicionado com sucesso!", "success")
+        else:
+            flash("Erro ao adicionar toner.", "error")
 
-    return redirect(url_for('index'))  # Redireciona de volta para a página principal
+    return redirect(url_for('index'))
 
 
 
@@ -425,7 +418,6 @@ def retirar_toner():
         flash("Erro ao retirar toner do estoque.", 'danger')
 
     return redirect(url_for('index'))
-
 
 # Rota para cadastro de novos usuários
 @app.route('/signup', methods=['GET', 'POST'])
@@ -521,8 +513,6 @@ def alterar_senha():
     usuarios[username] = generate_password_hash(new_password)
     flash("Senha alterada com sucesso!", 'success')
     return redirect(url_for('index'))
-
-
 
 
 if __name__ == '__main__':
