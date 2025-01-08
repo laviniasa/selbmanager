@@ -208,43 +208,6 @@
 
     <hr>
 
-    <!-- Listagem das Solicitações -->
-    <h3 class="mt-4" style="color: #333;">Solicitações Registradas</h3>
-    {% if solicitacoes %}
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Tipo de Impressão</th>
-                <th>Plastificação</th>
-                <th>Encadernação</th>
-                <th>Refilagem</th>
-                <th>Quantidade</th>
-                <th>Solicitante</th>
-                <th>Departamento</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for solicitacao in solicitacoes %}
-            <tr>
-                <td>{{ solicitacao['data'] }}</td>
-                <td>{{ solicitacao['tipo_impressao'] | capitalize }}</td>
-                <td>{{ solicitacao['plastificacao'] }}</td>
-                <td>{{ solicitacao['encadernacao'] }}</td>
-                <td>{{ solicitacao['refilagem'] }}</td>
-                <td>{{ solicitacao['quantidade'] }}</td>
-                <td>{{ solicitacao['solicitante'] }}</td>
-                <td>{{ solicitacao['departamento'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p class="alert alert-warning">Não há solicitações registradas.</p>
-{% endif %}
-
-
-
     <script>
         // Função para mostrar ou esconder o campo de quantidade de impressões
         function toggleQuantidadeField() {
