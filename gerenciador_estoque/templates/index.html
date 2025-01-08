@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -12,47 +11,45 @@
     <style>
         /* Estilo do menu de navegação */
         .navbar {
-            background-color: #f0f0f0;
+            background-color: #d77a00;
         }
-
+        
         .navbar-nav .nav-item {
             margin-left: 15px;
             margin-right: 15px;
         }
-
+        
         .navbar-nav .nav-item .nav-link {
-            background-color: #e88d00;
+            background-color: #b95229;
             color: white;
             font-weight: bold;
             padding: 12px 20px;
             border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
         }
-
+        
         .navbar-nav .nav-item .nav-link:hover {
-            background-color: #d77a00; /* tom mais escuro de laranja */
+            background-color: #3498db;
             color: white;
-            transform: scale(1.05);
         }
-
+        
         .navbar .navbar-brand {
             font-weight: bold;
             font-size: 1.2em;
         }
-
+        
         /* Estilo do conteúdo principal */
         .container {
             margin-top: 30px;
         }
-
+        
         .form-container {
             background-color: #F8F3E2;
-            padding: 30px;
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
-
+        
         .btn {
             padding: 12px 18px;
             background-color: #e88d00;
@@ -61,44 +58,211 @@
             border-radius: 5px;
             transition: all 0.3s ease;
         }
-
+        
         .btn:hover {
             transform: scale(1.1);
-            background-color: #e88d00;
+            background-color: #d77a00;
         }
-
+        
         table th, table td {
             padding: 10px;
             text-align: left;
         }
-
+        
         /* Título das seções */
         h3 {
             color: #333;
             margin-bottom: 20px;
         }
-
+        
         /* Estilo do histórico */
         table {
             width: 100%;
             margin-top: 30px;
         }
-
+        
         /* Responsividade para dispositivos menores */
         @media (max-width: 768px) {
-            .navbar {
+            .navbar-nav {
+                display: block;
                 text-align: center;
             }
-
-            .navbar a {
-                padding: 8px 15px;
+        
+            #sideMenu {
+                width: 100%;
+                transform: translateX(-100%);
             }
-
-            header h3 {
-                font-size: 2em;
+        
+            #sideMenu.open {
+                transform: translateX(0);
+            }
+        
+            .form-container {
+                padding: 15px;
+            }
+        
+            .table th, .table td {
+                font-size: 0.9rem;
+            }
+        
+            /* Exibe o botão de menu para dispositivos móveis */
+            #menuButton {
+                display: block;
+                background-color: #34495e;
+                color: white;
+                border: none;
+                font-size: 1.2em;
+                padding: 10px 20px;
+                cursor: pointer;
+                z-index: 1000;
+                position: absolute;
+                top: 20px;
+                left: 20px;
+            }
+        
+            /* Ajusta o menu lateral para ocupar toda a tela em dispositivos móveis */
+            #sideMenu {
+                width: 100%;
+            }
+        
+            .navbar {
+                display: none; /* Oculta a navbar em telas pequenas */
             }
         }
-    </style>
+        
+        /* Estilo do modal */
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .modal-header {
+            background-color: #e88d00;
+            color: white;
+            font-weight: bold;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+        }
+        
+        .modal-body {
+            padding: 15px;
+        }
+        
+        .modal-footer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        
+        .modal-footer .btn {
+            padding: 10px 20px;
+            background-color: #e88d00;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .modal-footer .btn:hover {
+            background-color: #d77a00;
+        }
+        
+        /* Tabela dentro do modal */
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        
+        .table th, .table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e1e1e1;
+        }
+        
+        .table thead {
+            background-color: #f0f0f0;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        
+        .table td {
+            font-size: 0.9rem;
+        }
+        
+        /* Botão de fechar */
+        .close {
+            font-size: 1.5rem;
+            color: #333;
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        .close:hover {
+            opacity: 0.7;
+        }
+        .modal-header .close {
+            font-size: 1.5rem;
+            color: #000;
+        }
+        
+        /* Estilo do menu lateral */
+        #sideMenu {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #2c503e;
+            color: #ecf0f1;
+            padding-top: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        #sideMenu.open {
+            display: block;
+            transform: translateX(0);
+        }
+        
+        #sideMenu ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        #sideMenu ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        #sideMenu ul li a {
+            color: #ecf0f1;
+            font-weight: bold;
+        }
+        
+        #sideMenu ul li a:hover {
+            background-color: #d77a00;
+            color: white;
+        }
+        </style>
+    
 </head>
 
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; padding: 20px;">
@@ -112,30 +276,23 @@
                 <span class="navbar-brand" style="color: #ffffff;">Estoque</span>
             </li>
             
-            <!-- Itens de navegação à direita -->
-            <div style="display: flex;">
-                <li class="nav-item">
-                    <a class="nav-link" href="/solicitacoes">Solicitações</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/visualizar">Chamados</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/cadastrar">Admin</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/historico">Histórico de Retiradas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/principal">Sair</a>
-                </li>
-            </div>
+            <!-- Botão para abrir o menu lateral -->
+            <button id="menuButton" onclick="toggleMenu()">Menu</button>
         </ul>
     </div>
 </nav>
 
-
-
+<!-- Menu Lateral -->
+<div id="sideMenu">
+    <ul class="menu">
+        <li title="home"><a href="#" class="menu-button home">Menu</a></li>
+        <li title="search"><a href="/solicitacoes" class="search">Solicitações</a></li>
+        <li title="pencil"><a href="/visualizar" class="pencil">Chamados</a></li>
+        <li title="about"><a href="/cadastrar" class="active about">Admin</a></li>
+        <li title="archive"><a href="/historico" class="archive">Histórico</a></li>
+        <li title="contact"><a href="/principal" class="contact">Sair</a></li>
+    </ul>
+</div>
 
     <!-- Conteúdo principal -->
     <div class="container">
@@ -153,140 +310,124 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Resto do conteúdo da página aqui... -->
-    </div>
-
         <!-- Estoque de Papel Total -->
         <div class="container mt-4">
             <h3>Estoque Total de Papel: {{ estoque_atual_papel }}</h3>  <!-- Exibe o estoque total de papel -->
 
         <!-- Formulários -->
         <div class="form-container">
-                <h3>Adicionar Resmas de Papel</h3>
-                <form method="POST" action="{{ url_for('adicionar_papel') }}">
-                    <label for="quantidade">Quantidade de Resmas:</label>
-                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-                    <button type="submit" class="btn mt-2">Adicionar Papel</button>
-                </form>
-            </div>
-            <div class="form-container">
-                <h3>Retirar Resmas de Papel</h3>
-                <form method="POST" action="{{ url_for('retirar_papel') }}">
-                    <label for="quantidade">Quantidade de Resmas:</label>
-                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-                    <label for="local">Local:</label>
-                    <input type="text" name="local" id="local" class="form-control" required>
-                    <button type="submit" class="btn mt-2">Retirar Papel</button>
-                </form>
-            </div>
-            <div class="form-container">
-                <h3>Adicionar Toner</h3>
-                <form method="POST" action="{{ url_for('adicionar_toner') }}">
-                    <label for="marca">Marca:</label>
-                    <input type="text" name="marca" id="marca" class="form-control" required>
-            
-                    <label for="tipo">SELB:</label>
-                    <input type="text" name="tipo" id="tipo" class="form-control" required>
-            
-                    <label for="quantidade">Quantidade:</label>
-                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-            
-                    <label for="validade">Validade:</label>
-                    <input type="date" name="validade" id="validade" class="form-control" required>
-            
-                    <button type="submit" class="btn mt-2">Adicionar Toner</button>
-                </form>
-            </div>
-            <div class="form-container">
-                <h3>Retirar Toner</h3>
-                <form method="POST" action="{{ url_for('retirar_toner') }}">
-                    
-                    <label for="marca">Marca:</label>
-                    <input type="text" name="marca" id="marca" class="form-control" required>
-            
-                    <label for="tipo">  SELB:</label>
-                    <!-- Usando <select> com a opção de escrever -->
-                    <input list="tipos-toner" name="tipo" id="tipo" class="form-control" required>
-            
-                    <label for="quantidade">Quantidade:</label>
-                    <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-            
-                    <label for="local">Local:</label>
-                    <input type="text" name="local" id="local" class="form-control" required>
-            
-                    <button type="submit" class="btn mt-2">Retirar Toner</button>
-                    <!-- Botão visualizar -->
-                    <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#tonerModal">VER</button>
-                </form>
-            </div>
-            <!-- Modal para exibir toners disponíveis -->
-            <div class="modal fade" id="tonerModal" tabindex="-1" role="dialog" aria-labelledby="tonerModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="tonerModalLabel">Toneres Disponíveis</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Tabela exibindo toners cadastrados -->
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Marca</th>
-                                        <th>Tipo (SELB)</th>
-                                        <th>Quantidade</th>
-                                        <th>Data de Validade</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for toner in toners_disponiveis %}
-                                        <tr>
-                                            <td>{{ toner.marca }}</td>
-                                            <td>{{ toner.tipo }}</td>
-                                            <td>{{ toner.quantidade }}</td>
-                                            <td>{{ toner.validade }}</td>
-                                        </tr>
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="4" class="text-center">Nenhum toner disponível.</td>
-                                        </tr>
-                                    {% endfor %}
+            <h3>Adicionar Resmas de Papel</h3>
+            <form method="POST" action="{{ url_for('adicionar_papel') }}">
+                <label for="quantidade">Quantidade de Resmas:</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+                <button type="submit" class="btn mt-2">Adicionar Papel</button>
+            </form>
+        </div>
+        
+        <div class="form-container">
+            <h3>Retirar Resmas de Papel</h3>
+            <form method="POST" action="{{ url_for('retirar_papel') }}">
+                <label for="quantidade">Quantidade de Resmas:</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+                <label for="local">Local:</label>
+                <input type="text" name="local" id="local" class="form-control" required>
+                <button type="submit" class="btn mt-2">Retirar Papel</button>
+            </form>
+        </div>
 
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                        </div>
-                    </div>
-                </div>
+        <div class="form-container">
+            <h3>Adicionar Toner</h3>
+            <form method="POST" action="{{ url_for('adicionar_toner') }}">
+                <label for="marca">Marca:</label>
+                <input type="text" name="marca" id="marca" class="form-control" required>
+        
+                <label for="tipo">SELB:</label>
+                <input type="text" name="tipo" id="tipo" class="form-control" required>
+        
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+        
+                <label for="validade">Validade:</label>
+                <input type="date" name="validade" id="validade" class="form-control" required>
+        
+                <button type="submit" class="btn mt-2">Adicionar Toner</button>
+            </form>
+        </div>
+
+        <div class="form-container">
+            <h3>Retirar Toner</h3>
+            <form method="POST" action="{{ url_for('retirar_toner') }}">
+                <label for="marca">Marca:</label>
+                <input type="text" name="marca" id="marca" class="form-control" required>
+        
+                <label for="tipo">SELB:</label>
+                <input list="tipos-toner" name="tipo" id="tipo" class="form-control" required>
+        
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+        
+                <label for="local">Local:</label>
+                <input type="text" name="local" id="local" class="form-control" required>
+        
+                <button type="submit" class="btn mt-2">Retirar Toner</button>
+                <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#modalTonerInfo">Ver </button>
+            </form>
+        </div>
+
+        </div> 
+    </div>
+
+<<!-- Modal -->
+<div class="modal fade" id="modalTonerInfo" tabindex="-1" role="dialog" aria-labelledby="modalTonerInfoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTonerInfoLabel">Estoque de Toner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </section>
-
-       
-
- 
-<!-- Scripts Bootstrap -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery Completo -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script> <!-- Popper.js -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
-
+            <div class="modal-body">
+                <!-- Tabela de toner -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Marca</th>
+                            <th>SELB</th>
+                            <th>Quantidade</th>
+                            <th>Validade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for toner in registros_toner %}
+                            <tr>
+                                <td>{{ toner['marca'] }}</td>
+                                <td>{{ toner['tipo'] }}</td>
+                                <td>{{ toner['quantidade'] }}</td>
+                                <td>{{ toner['validade'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Scripts do Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // Verifica se há mensagens de flash
-        document.addEventListener('DOMContentLoaded', function() {
-            const flashMessages = document.querySelectorAll('.flash-messages .alert');
-            flashMessages.forEach(function(msg) {
-                // Após 5 segundos, a mensagem desaparece
-                setTimeout(function() {
-                    msg.style.display = 'none';
-                }, 3000); // 5000 milissegundos = 5 segundos
-            });
-        });
+        // Função para abrir e fechar o menu lateral
+        function toggleMenu() {
+            const menu = document.getElementById("sideMenu");
+            menu.classList.toggle("open");
+        }
     </script>
 
 </body>
-
 </html>
