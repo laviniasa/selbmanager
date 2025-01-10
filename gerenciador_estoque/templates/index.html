@@ -105,20 +105,13 @@
                 font-size: 0.9rem;
             }
         
-            /* Exibe o botão de menu para dispositivos móveis */
             #menuButton {
-                display: block;
-                background-color: #34495e;
-                color: white;
-                border: none;
-                font-size: 1.2em;
-                padding: 10px 20px;
-                cursor: pointer;
-                z-index: 1000;
-                position: absolute;
-                top: 20px;
-                left: 20px;
+            margin-left: auto;
+            background-color: transparent; /* Opcional, para remover o fundo do botão */
+            border: none; /* Remove a borda */
+            position: relative;
             }
+
         
             /* Ajusta o menu lateral para ocupar toda a tela em dispositivos móveis */
             #sideMenu {
@@ -231,7 +224,7 @@
             top: 0;
             height: 100%;
             width: 250px;
-            background-color: #2c503e;
+            background-color: #1d573a;
             color: #ecf0f1;
             padding-top: 20px;
             transition: transform 0.3s ease;
@@ -262,6 +255,8 @@
             color: white;
         }
         </style>
+        
+    
     
 </head>
 
@@ -271,28 +266,56 @@
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e1e1e1;">
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <!-- Texto "Estoque" à esquerda com estilo navbar-brand -->
-            <li class="nav-item">
-                <span class="navbar-brand" style="color: #ffffff;">Estoque</span>
-            </li>
-            
-            <!-- Botão para abrir o menu lateral -->
-            <button id="menuButton" onclick="toggleMenu()">Menu</button>
+            <li class="nav-item navbar-brand">Estoque</li>
         </ul>
+        <button id="menuButton" onclick="toggleMenu()" class="ml-auto">
+            <img src="static/menu.png" alt="" style="width: 30px; height: 30px;">
+        </button>
     </div>
 </nav>
+
 
 <!-- Menu Lateral -->
 <div id="sideMenu">
     <ul class="menu">
         <li title="home"><a href="#" class="menu-button home">Menu</a></li>
-        <li title="search"><a href="/solicitacoes" class="search">Solicitações</a></li>
-        <li title="pencil"><a href="/visualizar" class="pencil">Chamados</a></li>
-        <li title="about"><a href="/cadastrar" class="active about">Admin</a></li>
-        <li title="archive"><a href="/historico" class="archive">Histórico</a></li>
-        <li title="contact"><a href="/principal" class="contact">Sair</a></li>
+        <li title="search">
+            <a href="/solicitacoes" class="search">
+                <img src="static/pencil.png" alt="Solicitações" style="width: 20px; height: 20px; margin-right: 10px;" />
+                Solicitações
+            </a>
+        </li>
+        
+        <li title="pencil">
+            <a href="/visualizar" class="pencil">
+                <img src="static/bell.png" alt="Chamados" style="width: 20px; height: 20px; margin-right: 10px;" />
+                Chamados
+            </a>
+        </li>
+        
+        <li title="about">
+            <a href="/cadastrar" class="active about">
+                <img src="static/info.png" alt="Admin" style="width: 20px; height: 20px; margin-right: 10px;" />
+                Admin
+            </a>
+        </li>
+        
+        <li title="archive">
+            <a href="/historico" class="archive">
+                <img src="static/mail.png" alt="Histórico" style="width: 20px; height: 20px; margin-right: 10px;" />
+                Histórico
+            </a>
+        </li>
+        
+        <li title="contact">
+            <a href="/principal" class="contact">
+                <img src="static/logout.png" alt="Sair" style="width: 20px; height: 20px; margin-right: 10px;" />
+                Sair
+            </a>
+        </li>
     </ul>
 </div>
+
 
     <!-- Conteúdo principal -->
     <div class="container">
@@ -370,7 +393,10 @@
                 <input type="text" name="local" id="local" class="form-control" required>
         
                 <button type="submit" class="btn mt-2">Retirar Toner</button>
-                <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#modalTonerInfo">Ver </button>
+                <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#modalTonerInfo">
+                    <img src="static/eye.png" alt="" style="width: 20px; height: 20px;"/>
+                </button>
+                
             </form>
         </div>
 
@@ -416,6 +442,9 @@
         </div>
     </div>
 </div>
+
+
+
     <!-- Scripts do Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
@@ -427,6 +456,29 @@
             const menu = document.getElementById("sideMenu");
             menu.classList.toggle("open");
         }
+    // Selecionando o botão, o menu e o conteúdo
+    const menuButton = document.getElementById('menuButton');
+    const sideMenu = document.getElementById('sideMenu');
+    const container = document.querySelector('.container');
+
+    // Alternar o estado do menu ao clicar no botão
+    menuButton.addEventListener('click', (event) => {
+        sideMenu.classList.toggle('closed');
+        container.classList.toggle('menu-closed');
+        event.stopPropagation(); // Impede que o clique no botão feche o menu
+    });
+
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener('click', (event) => {
+        const isClickInsideMenu = sideMenu.contains(event.target);
+        const isClickOnButton = menuButton.contains(event.target);
+
+        if (!isClickInsideMenu && !isClickOnButton) {
+            sideMenu.classList.add('closed');
+            container.classList.add('menu-closed');
+        }
+    });
+
     </script>
 
 </body>
