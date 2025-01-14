@@ -109,6 +109,38 @@
             border-radius: 5px;
             margin-bottom: 15px;
         }
+
+            /* Estilo base do botão */
+    .logout-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f44336;  /* Cor de fundo vermelha */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .logout-btn:hover {
+        background-color: #e53935;  /* Cor de fundo mais escura ao passar o mouse */
+        transform: translateY(-2px);  /* Levanta o botão ao passar o mouse */
+    }
+
+    .logout-btn:active {
+        background-color: #d32f2f;  /* Cor ao clicar */
+        transform: translateY(1px);  /* Efeito de clique */
+    }
+
+    /* Estilos do ícone */
+    .logout-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;  /* Espaço entre o ícone e o texto */
+    }
     </style>
 </head>
 <body>
@@ -143,8 +175,13 @@
             </form>
 
             <!-- Botão Voltar -->
-            <a href="principal.html" class="back-btn">Voltar</a>
+            <a href="/principal" class="contact">
+                <img src="static/logout.png" alt="Sair" style="width: 20px; height: 20px; margin-right: 10px;" />
+                Sair
+            </a> 
         </div>
     </div>
 </body>
 </html>
+
+
