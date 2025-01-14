@@ -15,19 +15,19 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+            background-color: #F8F3E2; /* Fundo amarelo claro */
             padding: 30px;
             color: #333;
         }
 
         h1 {
             text-align: center;
-            color: #2C3E50;
+            color: #34495E;
             margin-bottom: 40px;
             font-size: 2em;
         }
 
-        /* Estilo da container */
+        /* Estilo do container */
         .chamados-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -37,81 +37,65 @@
         }
 
         /* Estilo de cada chamado */
-        .chamado-box {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            min-height: 180px; /* Ajuste para consistência de tamanho */
-        }
+   /* Estilo de cada chamado */
+   .chamado-box {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative; /* Garante que o botão seja posicionado em relação a esta caixa */
+        min-height: 220px; /* Garante espaço suficiente para o botão */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Espaça conteúdo e botão */
+    }
 
-        .chamado-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-        }
+    .chamado-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    }
 
-        .chamado-box h3 {
-            color: #34495E;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-transform: capitalize;
-        }
+    .chamado-box h3 {
+        color: #34495E;
+        font-size: 1.3em;
+        margin-bottom: 15px;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
 
-        .chamado-box p {
-            color: #7F8C8D;
-            font-size: 1em;
-            margin-bottom: 12px;
-        }
+    .chamado-box p {
+        color: #7F8C8D;
+        font-size: 1em;
+        margin-bottom: 12px;
+    }
 
-        .chamado-box p strong {
-            color: #34495E;
-        }
+    .chamado-box p strong {
+        color: #34495E;
+    }
 
-        /* Estilo para mensagens flash */
-        .flash-message {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+    /* Botão de excluir */
+    .delete-btn {
+        background-color: #e88d00; /* Laranja */
+        color: white;
+        padding: 8px 20px;
+        border: none; /* Remove borda */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        align-self: flex-end; /* Alinha o botão à direita */
+    }
 
-        .flash-error {
-            background-color: #f44336;
-        }
-
-        .flash-info {
-            background-color: #2196F3;
-        }
-
-        /* Botão de excluir */
-        .delete-btn {
-            background-color: #E74C3C;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-        }
-
-        .delete-btn:hover {
-            background-color: #C0392B;
-        }
+    .delete-btn:hover {
+        background-color: #d77a00; /* Laranja mais escuro */
+        transform: scale(1.05);
+    }
 
         /* Botão de voltar */
         .voltar-btn {
             display: inline-block;
             padding: 12px 25px;
-            background-color: #2ECC71;
+            background-color: #e88d00; /* Laranja */
             color: white;
             border-radius: 5px;
             text-decoration: none;
@@ -125,7 +109,7 @@
         }
 
         .voltar-btn:hover {
-            background-color: #27AE60;
+            background-color: #d77a00; /* Laranja mais escuro */
             transform: scale(1.05);
         }
 
@@ -139,7 +123,6 @@
                 width: 100%;
             }
         }
-
     </style>
 </head>
 
