@@ -7,183 +7,188 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 10px;
-            margin: 0;
-            overflow: hidden;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 15px;
+    margin: 0;
+}
 
-        .container {
-            width: 100%;
-            max-width: 400px;  /* Tamanho reduzido para telas menores */
-            max-height: 90vh;  /* Altura máxima da caixa */
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;  /* Adicionando scroll vertical */
-            transform: translateY(-50px);
-            animation: slideIn 0.6s ease-out forwards;
-        }
+/* Container do formulário */
+.container {
+    width: 100%;
+    max-width: 350px;  /* Tamanho mais estreito para um design mais compacto */
+    max-height: 90vh;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    transform: translateY(-50px);
+    animation: slideIn 0.6s ease-out forwards;
+}
 
-        h1 {
-            font-size: 22px; /* Ajustando tamanho do título */
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-            animation: fadeIn 1s ease-out forwards;
-        }
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+    animation: fadeIn 1s ease-out forwards;
+}
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            text-align: left;
-            opacity: 0;
-            animation: fadeInForm 1.2s ease-out forwards;
-        }
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    opacity: 0;
+    animation: fadeInForm 1.2s ease-out forwards;
+}
 
-        label {
-            font-size: 16px;
-            color: #444;
-            margin-bottom: 5px;
-        }
+label {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 5px;
+}
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            transition: border 0.3s ease, background-color 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
+/* Inputs, selects e textareas */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: border 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
 
-        input:focus, select:focus, textarea:focus {
-            border: 1px solid #4CAF50;
-            outline: none;
-            background-color: #eef9e6;
-        }
+input:focus, select:focus, textarea:focus {
+    border: 1px solid #4CAF50;
+    outline: none;
+    background-color: #eef9e6;
+}
 
-        textarea {
-            resize: vertical;
-        }
+textarea {
+    resize: vertical;
+}
 
-        button {
-            background-color: #4CAF50;
-            color: #fff;
-            font-size: 16px;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: 20px;
-        }
+/* Botão de envio */
+button {
+    background-color: #4CAF50;
+    color: #fff;
+    font-size: 16px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+}
 
-        button:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-        }
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
 
-        button:active {
-            background-color: #388e3c;
-            transform: translateY(1px);
-        }
+button:active {
+    background-color: #388e3c;
+    transform: translateY(1px);
+}
 
-        .back-btn {
-            margin-top: 20px;
-            display: inline-block;
-            background-color: #f44336;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-align: center;
-            text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+/* Botão de voltar */
+.back-btn {
+    margin-top: 20px;
+    display: inline-block;
+    background-color: #f44336;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
-        .back-btn:hover {
-            background-color: #e53935;
-            transform: translateY(-2px);
-        }
+.back-btn:hover {
+    background-color: #e53935;
+    transform: translateY(-2px);
+}
 
-        .back-btn:active {
-            background-color: #c62828;
-            transform: translateY(1px);
-        }
+.back-btn:active {
+    background-color: #c62828;
+    transform: translateY(1px);
+}
 
-        .hidden {
-            display: none;
-        }
+/* Esconder elementos */
+.hidden {
+    display: none;
+}
 
-        /* Animações */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+/* Animações */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
 
-        @keyframes fadeInForm {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+@keyframes fadeInForm {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
 
-        @keyframes slideIn {
-            0% { transform: translateY(-100px); }
-            100% { transform: translateY(0); }
-        }
+@keyframes slideIn {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(0); }
+}
 
-        /* Responsividade para telas pequenas */
-        @media (max-width: 768px) {
-            .container {
-                max-width: 85%; /* Ajuste para telas médias */
-                padding: 15px;
-            }
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;  /* Largura ainda confortável para telas médias */
+        padding: 20px;
+    }
 
-            h1 {
-                font-size: 20px; /* Menor título em telas médias */
-            }
+    h1 {
+        font-size: 20px;
+    }
 
-            input, select, textarea, button {
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
+    input, select, textarea, button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
 
-        @media (max-width: 480px) {
-            .container {
-                max-width: 90%; /* Ajuste para telas muito pequenas */
-                padding: 12px;
-            }
+@media (max-width: 480px) {
+    .container {
+        max-width: 90%;
+        padding: 15px;
+    }
 
-            h1 {
-                font-size: 18px; /* Menor título em telas menores */
-            }
+    h1 {
+        font-size: 18px;
+    }
 
-            input, select, textarea, button {
-                font-size: 13px;
-                padding: 8px;
-            }
+    input, select, textarea, button {
+        font-size: 13px;
+        padding: 8px;
+    }
 
-            .back-btn {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-        }
+    .back-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
     </style>
 </head>
 <body>
