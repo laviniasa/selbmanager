@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
 
@@ -515,5 +516,6 @@ def alterar_senha():
     return redirect(url_for('index'))
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    # Usa a variável de ambiente PORT, caso exista, ou 5000 como padrão
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
