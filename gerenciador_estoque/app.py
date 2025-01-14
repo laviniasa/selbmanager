@@ -239,7 +239,7 @@ def solicitacoes():
         solicitacoes_db.append(solicitacao)
 
         # Exibir uma mensagem de sucesso
-        flash('Solicitação registrada com sucesso!', 'success')
+        flash('Solicitação registrada com sucesso!', 'success') 
 
         # Redireciona para a página de solicitação para mostrar a tabela de dados
         return redirect(url_for('solicitacoes'))
