@@ -254,9 +254,13 @@
             background-color: #d77a00;
             color: white;
         }
+        .menu-button img {
+            margin-left: -1px; /* Move a imagem um pouco para a esquerda */
+            display: block;
+            margin: 0 auto;
+        }
+
         </style>
-        
-    
     
 </head>
 
@@ -278,7 +282,13 @@
 <!-- Menu Lateral -->
 <div id="sideMenu">
     <ul class="menu">
-        <li title="home"><a href="#" class="menu-button home">Menu</a></li>
+        <a href="#" class="menu-button home">
+            <img src="static/logo.png" alt="Menu" style="height: 40px; width: auto; display: block;">
+
+        </a>
+  
+        
+        
         <li title="search">
             <a href="/solicitacoes" class="search">
                 <img src="static/pencil.png" alt="Solicitações" style="width: 20px; height: 20px; margin-right: 10px;" />
@@ -456,30 +466,45 @@
             const menu = document.getElementById("sideMenu");
             menu.classList.toggle("open");
         }
-    // Selecionando o botão, o menu e o conteúdo
-    const menuButton = document.getElementById('menuButton');
-    const sideMenu = document.getElementById('sideMenu');
-    const container = document.querySelector('.container');
-
-    // Alternar o estado do menu ao clicar no botão
-    menuButton.addEventListener('click', (event) => {
-        sideMenu.classList.toggle('closed');
-        container.classList.toggle('menu-closed');
-        event.stopPropagation(); // Impede que o clique no botão feche o menu
-    });
-
-    // Fechar o menu ao clicar fora dele
-    document.addEventListener('click', (event) => {
-        const isClickInsideMenu = sideMenu.contains(event.target);
-        const isClickOnButton = menuButton.contains(event.target);
-
-        if (!isClickInsideMenu && !isClickOnButton) {
-            sideMenu.classList.add('closed');
-            container.classList.add('menu-closed');
-        }
-    });
-
+    
+        // Selecionando o botão, o menu e o conteúdo
+        const menuButton = document.getElementById('menuButton');
+        const sideMenu = document.getElementById('sideMenu');
+        const container = document.querySelector('.container');
+    
+        // Alternar o estado do menu ao clicar no botão
+        menuButton.addEventListener('click', (event) => {
+            sideMenu.classList.toggle('closed');
+            container.classList.toggle('menu-closed');
+            event.stopPropagation(); // Impede que o clique no botão feche o menu
+        });
+    
+        // Fechar o menu ao clicar fora dele
+        document.addEventListener('click', (event) => {
+            const isClickInsideMenu = sideMenu.contains(event.target);
+            const isClickOnButton = menuButton.contains(event.target);
+    
+            if (!isClickInsideMenu && !isClickOnButton) {
+                sideMenu.classList.add('closed');
+                container.classList.add('menu-closed');
+            }
+        });
+    
+        // Espera a página carregar completamente
+        window.onload = function() {
+            // Seleciona todas as mensagens de flash
+            const flashMessages = document.querySelectorAll('.flash-messages .alert');
+            
+            flashMessages.forEach(function(message) {
+                // Define o tempo que a mensagem ficará visível (em milissegundos)
+                setTimeout(function() {
+                    // Remove a mensagem após 3 segundos (3000 milissegundos)
+                    message.style.display = 'none';
+                }, 2000); // 3000ms = 3 segundos
+            });
+        };
     </script>
+    
 
 </body>
 </html>
