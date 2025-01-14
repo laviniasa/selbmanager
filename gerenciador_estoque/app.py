@@ -517,5 +517,6 @@ def alterar_senha():
 
 
 if __name__ == "__main__":
-    # Usa a variável de ambiente PORT, caso exista, ou 5000 como padrão
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    # Tenta usar a variável de ambiente PORT ou 5000 como padrão
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
