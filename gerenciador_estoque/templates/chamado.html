@@ -209,8 +209,10 @@ button:active {
                 <option value="">Selecione...</option>
                 <option value="solicitar_material">Solicitar Material</option>
                 <option value="relatar_problema">Relatar Problema</option>
+                <option value="solicitar_servico">Solicitar Serviço</option> <!-- Nova opção -->
             </select>
 
+            <!-- Seção de "Solicitar Material" já existente -->
             <div id="solicitar-material" class="hidden">
                 <label for="material">Tipo de Material:</label>
                 <select id="material" name="material" onchange="mostrarQuantidade()">
@@ -225,6 +227,7 @@ button:active {
                 </div>
             </div>
 
+            <!-- Seção de "Relatar Problema" já existente -->
             <div id="relatar-problema" class="hidden">
                 <label for="problema">Selecione o Problema:</label>
                 <select id="problema" name="problema" onchange="mostrarDescricaoProblema()">
@@ -237,6 +240,27 @@ button:active {
                 <div id="descricao-problema" class="hidden">
                     <label for="descricao">Descreva o Problema:</label>
                     <textarea id="descricao" name="descricao" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Nova seção para "Solicitar Serviço" -->
+            <div id="solicitar-servico" class="hidden">
+                <label for="servicos">Escolha os Serviços Desejados:</label>
+                <div>
+                    <input type="checkbox" id="impressao" name="servicos" value="impressao">
+                    <label for="impressao">Impressão</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="plastificacao" name="servicos" value="plastificacao">
+                    <label for="plastificacao">Plastificação</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="encadernacao" name="servicos" value="encadernacao">
+                    <label for="encadernacao">Encadernação</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="refilagem" name="servicos" value="refilagem">
+                    <label for="refilagem">Refilagem</label>
                 </div>
             </div>
 
@@ -282,6 +306,25 @@ button:active {
             if (problema === 'outro') {
                 descricaoProblema.classList.remove('hidden');
             }
+
+            function mostrarOpcoes() {
+            var acao = document.getElementById('acao').value;
+            var solicitarMaterial = document.getElementById('solicitar-material');
+            var relatarProblema = document.getElementById('relatar-problema');
+            var solicitarServico = document.getElementById('solicitar-servico');
+
+            solicitarMaterial.classList.add('hidden');
+            relatarProblema.classList.add('hidden');
+            solicitarServico.classList.add('hidden');  // Esconde os serviços inicialmente
+
+            if (acao === 'solicitar_material') {
+                solicitarMaterial.classList.remove('hidden');
+            } else if (acao === 'relatar_problema') {
+                relatarProblema.classList.remove('hidden');
+            } else if (acao === 'solicitar_servico') {  // Exibe a seção de serviços
+                solicitarServico.classList.remove('hidden');
+            }
+        }
         }
     </script>
 </body>
