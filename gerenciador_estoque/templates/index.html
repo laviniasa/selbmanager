@@ -8,260 +8,8 @@
     <title>Gestão de Estoque de Papel e Toner</title>
     <!-- Adicionando o Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        /* Estilo do menu de navegação */
-        .navbar {
-            background-color: #d77a00;
-        }
-        
-        .navbar-nav .nav-item {
-            margin-left: 15px;
-            margin-right: 15px;
-        }
-        
-        .navbar-nav .nav-item .nav-link {
-            background-color: #b95229;
-            color: white;
-            font-weight: bold;
-            padding: 12px 20px;
-            border-radius: 5px;
-        }
-        
-        .navbar-nav .nav-item .nav-link:hover {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .navbar .navbar-brand {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        
-        /* Estilo do conteúdo principal */
-        .container {
-            margin-top: 30px;
-        }
-        
-        .form-container {
-            background-color: #F8F3E2;
-            padding: 12px;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
-        }
-        
-        .btn {
-            padding: 12px 18px;
-            background-color: #e88d00;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: scale(1.1);
-            background-color: #d77a00;
-        }
-        
-        table th, table td {
-            padding: 10px;
-            text-align: left;
-        }
-        
-        /* Título das seções */
-        h3 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        
-        /* Estilo do histórico */
-        table {
-            width: 100%;
-            margin-top: 30px;
-        }
-        
-        /* Responsividade para dispositivos menores */
-        @media (max-width: 768px) {
-            .navbar-nav {
-                display: block;
-                text-align: center;
-            }
-        
-            #sideMenu {
-                width: 100%;
-                transform: translateX(-100%);
-            }
-        
-            #sideMenu.open {
-                transform: translateX(0);
-            }
-        
-            .form-container {
-                padding: 15px;
-            }
-        
-            .table th, .table td {
-                font-size: 0.9rem;
-            }
-        
-            #menuButton {
-            margin-left: auto;
-            background-color: transparent; /* Opcional, para remover o fundo do botão */
-            border: none; /* Remove a borda */
-            position: relative;
-            }
+    <link rel="stylesheet" href="../static/index.css">
 
-        
-            /* Ajusta o menu lateral para ocupar toda a tela em dispositivos móveis */
-            #sideMenu {
-                width: 100%;
-            }
-        
-            .navbar {
-                display: none; /* Oculta a navbar em telas pequenas */
-            }
-        }
-        
-        /* Estilo do modal */
-        .modal-content {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        
-        .modal-header {
-            background-color: #e88d00;
-            color: white;
-            font-weight: bold;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            padding: 15px;
-        }
-        
-        .modal-title {
-            font-size: 1.5rem;
-        }
-        
-        .modal-body {
-            padding: 15px;
-        }
-        
-        .modal-footer {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-        
-        .modal-footer .btn {
-            padding: 10px 20px;
-            background-color: #e88d00;
-            color: white;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        
-        .modal-footer .btn:hover {
-            background-color: #d77a00;
-        }
-        
-        /* Tabela dentro do modal */
-        .table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        
-        .table th, .table td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #e1e1e1;
-        }
-        
-        .table thead {
-            background-color: #f0f0f0;
-        }
-        
-        .table tbody tr:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .table tbody tr:nth-child(odd) {
-            background-color: #ffffff;
-        }
-        
-        .table td {
-            font-size: 0.9rem;
-        }
-        
-        /* Botão de fechar */
-        .close {
-            font-size: 1.5rem;
-            color: #333;
-            opacity: 1;
-            transition: opacity 0.2s ease-in-out;
-        }
-        
-        .close:hover {
-            opacity: 0.7;
-        }
-        .modal-header .close {
-            font-size: 1.5rem;
-            color: #000;
-        }
-        
-        /* Estilo do menu lateral */
-        #sideMenu {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 250px;
-            background-color: #1d573a;
-            color: #ecf0f1;
-            padding-top: 20px;
-            transition: transform 0.3s ease;
-        }
-        
-        #sideMenu.open {
-            display: block;
-            transform: translateX(0);
-        }
-        
-        #sideMenu ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        
-        #sideMenu ul li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        #sideMenu ul li a {
-            color: #ecf0f1;
-            font-weight: bold;
-        }
-        
-        #sideMenu ul li a:hover {
-            background-color: #d77a00;
-            color: white;
-        }
-        .menu-button img {
-            margin-left: -1px; /* Move a imagem um pouco para a esquerda */
-            display: block;
-            margin: 0 auto;
-        }
-
-        </style>
-    
 </head>
 
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; padding: 20px;">
@@ -273,59 +21,54 @@
             <li class="nav-item navbar-brand">Estoque</li>
         </ul>
         <button id="menuButton" onclick="toggleMenu()" class="ml-auto">
-            <img src="static/menu.png" alt="" style="width: 30px; height: 30px;">
+            <img src="../static/img/menu.png" alt="" style="width: 30px; height: 30px;">
         </button>
     </div>
 </nav>
-
 
 <!-- Menu Lateral -->
 <div id="sideMenu">
     <ul class="menu">
         <a href="#" class="menu-button home">
-            <img src="static/logo.png" alt="Menu" style="height: 40px; width: auto; display: block;">
-
+            <img src="../static/img/logo.png" alt="Menu" style="height: 40px; width: auto; display: block;">
         </a>
   
-        
-        
         <li title="search">
             <a href="/solicitacoes" class="search">
-                <img src="static/pencil.png" alt="Solicitações" style="width: 20px; height: 20px; margin-right: 10px;" />
+                <img src="../static/img/pencil.png" alt="Solicitações" style="width: 20px; height: 20px; margin-right: 10px;" />
                 Solicitações
             </a>
         </li>
         
         <li title="pencil">
             <a href="/visualizar" class="pencil">
-                <img src="static/bell.png" alt="Chamados" style="width: 20px; height: 20px; margin-right: 10px;" />
+                <img src="../static/img/bell.png" alt="Chamados" style="width: 20px; height: 20px; margin-right: 10px;" />
                 Chamados
             </a>
         </li>
         
         <li title="about">
             <a href="/cadastrar" class="active about">
-                <img src="static/info.png" alt="Admin" style="width: 20px; height: 20px; margin-right: 10px;" />
+                <img src="../static/img/info.png"Admin" style="width: 20px; height: 20px; margin-right: 10px;" />
                 Admin
             </a>
         </li>
         
         <li title="archive">
             <a href="/historico" class="archive">
-                <img src="static/mail.png" alt="Histórico" style="width: 20px; height: 20px; margin-right: 10px;" />
+                <img src="../static/img/mail.png" alt="Histórico" style="width: 20px; height: 20px; margin-right: 10px;" />
                 Histórico
             </a>
         </li>
         
         <li title="contact">
             <a href="/principal" class="contact">
-                <img src="static/logout.png" alt="Sair" style="width: 20px; height: 20px; margin-right: 10px;" />
+                <img src="../static/img/logout.png" alt="Sair" style="width: 20px; height: 20px; margin-right: 10px;" />
                 Sair
             </a>
         </li>
     </ul>
 </div>
-
 
     <!-- Conteúdo principal -->
     <div class="container">
@@ -404,7 +147,7 @@
         
                 <button type="submit" class="btn mt-2">Retirar Toner</button>
                 <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#modalTonerInfo">
-                    <img src="static/eye.png" alt="" style="width: 20px; height: 20px;"/>
+                    <img src="../static/img/eye.png" alt="" style="width: 20px; height: 20px;"/>
                 </button>
                 
             </form>
@@ -413,7 +156,7 @@
         </div> 
     </div>
 
-<<!-- Modal -->
+<!-- Modal -->
 <div class="modal fade" id="modalTonerInfo" tabindex="-1" role="dialog" aria-labelledby="modalTonerInfoLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -453,8 +196,6 @@
     </div>
 </div>
 
-
-
     <!-- Scripts do Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
@@ -479,17 +220,6 @@
             event.stopPropagation(); // Impede que o clique no botão feche o menu
         });
     
-        // Fechar o menu ao clicar fora dele
-        document.addEventListener('click', (event) => {
-            const isClickInsideMenu = sideMenu.contains(event.target);
-            const isClickOnButton = menuButton.contains(event.target);
-    
-            if (!isClickInsideMenu && !isClickOnButton) {
-                sideMenu.classList.add('closed');
-                container.classList.add('menu-closed');
-            }
-        });
-    
         // Espera a página carregar completamente
         window.onload = function() {
             // Seleciona todas as mensagens de flash
@@ -504,7 +234,6 @@
             });
         };
     </script>
-    
 
 </body>
 </html>
