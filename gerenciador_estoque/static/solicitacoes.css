@@ -1,0 +1,158 @@
+/* Estilo do cabeçalho */
+header {
+    background-color: #000000;
+    padding: 20px 0;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-family: 'Arial', sans-serif;
+    font-size: 2.5em;
+    margin: 0;
+}
+
+/* Estilo do menu de navegação */
+.navbar {
+    background-color: #f0f0f0;
+    padding: 10px 0;
+}
+
+.navbar a {
+    color: black;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar a:hover {
+    background-color: #e88d00;
+    color: white;
+}
+
+.navbar .navbar-brand {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: black;
+}
+
+/* Estilo dos botões */
+.btn {
+    padding: 12px 18px;
+    background-color: #e88d00;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    background-color: #d87a00; /* Cor mais suave */
+}
+
+.btn:active {
+    transform: scale(1.02);
+    background-color: #e88d00;
+}
+
+/* Estilo do formulário */
+form {
+    background-color: #F8F3E2;
+    padding: 20px 30px; /* Reduzido o padding para não ficar tão espaçado */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+    max-width: 600px; /* Limita a largura do formulário */
+    margin-left: auto;
+    margin-right: auto; /* Centraliza o formulário */
+}
+
+.form-group {
+    margin-bottom: 20px; /* Distância entre os campos */
+}
+
+/* Estilo das tabelas */
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estilo do conteúdo */
+.container {
+    padding: 20px;
+    background-color:  #f4f4f4;
+}
+
+/* Estilo das mensagens de feedback */
+.alert {
+    font-size: 1.1em;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+    .navbar {
+        text-align: center;
+        padding: 15px 0;
+    }
+
+    .navbar a {
+        padding: 8px 15px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    .titulo-solicitacoes {
+        font-size: 1.5em;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        width: 100%; /* O botão ocupa toda a largura disponível */
+    }
+
+    form {
+        padding: 20px;
+    }
+}
+
+/* Título "Solicitações" no canto esquerdo */
+.titulo-solicitacoes {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Mudando a cor da letra para branco */
+.navbar-nav .nav-item .btn {
+    background-color: #e88d00; /* Cor de fundo */
+    color: white; /* Cor da letra */
+    border: 1px solid #ddd; /* Bordas leves */
+}
+
+.navbar-nav .nav-item .btn:hover {
+    background-color: #d77a00; /* Cor de fundo ao passar o mouse */
+    color: black; /* Muda a cor do texto para preto */
+}
+
+/* Mudando a cor da letra para branco e mantendo-a branca ao passar o mouse */
+.navbar-nav .nav-item .navbar-brand {
+    color: white !important;
+    padding-left: 10px; /* Ajuste o valor conforme necessário */
+}
+
+
+.navbar-nav .nav-item .navbar-brand:hover {
+    color: white !important;
+}

@@ -1,0 +1,188 @@
+/* Reset básico */
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 15px;
+    margin: 0;
+}
+
+/* Container do formulário */
+.container {
+    width: 100%;
+    max-width: 350px;  /* Ajuste a largura, se necessário */
+    max-height: 80vh;  /* Reduzir a altura do contêiner */
+    background-color: #f4f4f4;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 15px;  /* Reduzir o padding */
+    box-sizing: border-box;
+    overflow-y: auto;
+    transform: translateY(-50px);
+    animation: slideIn 0.6s ease-out forwards;
+}
+
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+    animation: fadeIn 1s ease-out forwards;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;  /* Diminui o espaço entre os campos do formulário */
+    margin-bottom: 5px;  /* Diminui o espaço abaixo do label */
+}
+
+label {
+    font-size: 18px; /* Aumenta o tamanho da fonte */
+    font-weight: 600; /* Deixa a fonte mais forte */
+    color: #333; /* Cor do texto, pode ajustar para algo mais visível */
+    margin-bottom: 10px; /* Aumenta o espaço entre o texto e o campo */
+    display: block; /* Garante que o label ocupe a linha inteira */
+    letter-spacing: 0.5px; /* Adiciona espaçamento entre as letras */
+    line-height: 1.5; /* Aumenta a altura da linha para facilitar a leitura */
+}
+
+
+/* Inputs, selects e textareas */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;  /* Aumentando o padding para afastar mais o texto das bordas */
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: border 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+input:focus, select:focus, textarea:focus {
+    border: 1px solid #4CAF50;
+    outline: none;
+    background-color: #eef9e6;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Botão de envio */
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    margin-top: 15px;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px; /* Torna as bordas mais arredondadas */
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background-color: #388e3c;
+    transform: translateY(1px);
+}
+
+/* Botão de voltar */
+.back-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 16px;
+    margin-top: 10px;
+    background-color: #e88d00;  /* Laranja */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+
+.back-btn:hover {
+    background-color: #e88d00;
+    transform: translateY(-2px);
+}
+
+.back-btn:active {
+    background-color: #e88d00;
+    transform: translateY(1px);
+}
+
+/* Esconder elementos */
+.hidden {
+    display: none;
+}
+
+/* Animações */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInForm {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes slideIn {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(0); }
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;  /* Largura ainda confortável para telas médias */
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    input, select, textarea, button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    input, select, textarea, button {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .back-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
