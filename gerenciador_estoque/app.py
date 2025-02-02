@@ -516,6 +516,7 @@ def alterar_senha():
     return redirect(url_for('index'))
 
 
+
 if __name__ == "__main__":
     # Tenta usar a variável de ambiente PORT ou 5000 como padrão
     port = int(os.environ.get("PORT", 5000))  # Certifique-se de que o valor de PORT está sendo atribuído corretamente
