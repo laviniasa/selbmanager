@@ -95,20 +95,20 @@
             <h3>Adicionar Resmas de Papel</h3>
             <form method="POST" action="{{ url_for('adicionar_papel') }}">
                 <label for="quantidade">Quantidade de Resmas:</label>
-                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="0">
                 <button type="submit" class="btn mt-2">Adicionar Papel</button>
-            </form>
+            </form>            
         </div>
         
         <div class="form-container">
             <h3>Retirar Resmas de Papel</h3>
             <form method="POST" action="{{ url_for('retirar_papel') }}">
                 <label for="quantidade">Quantidade de Resmas:</label>
-                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="0">
                 <label for="local">Local:</label>
                 <input type="text" name="local" id="local" class="form-control" required>
                 <button type="submit" class="btn mt-2">Retirar Papel</button>
-            </form>
+            </form>            
         </div>
 
         <div class="form-container">
@@ -116,18 +116,19 @@
             <form method="POST" action="{{ url_for('adicionar_toner') }}">
                 <label for="marca">Marca:</label>
                 <input type="text" name="marca" id="marca" class="form-control" required>
-        
+            
                 <label for="tipo">SELB:</label>
                 <input type="text" name="tipo" id="tipo" class="form-control" required>
-        
+            
                 <label for="quantidade">Quantidade:</label>
-                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-        
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="0">
+            
                 <label for="validade">Validade:</label>
                 <input type="date" name="validade" id="validade" class="form-control" required>
-        
+            
                 <button type="submit" class="btn mt-2">Adicionar Toner</button>
             </form>
+            
         </div>
 
         <div class="form-container">
@@ -135,22 +136,22 @@
             <form method="POST" action="{{ url_for('retirar_toner') }}">
                 <label for="marca">Marca:</label>
                 <input type="text" name="marca" id="marca" class="form-control" required>
-        
+            
                 <label for="tipo">SELB:</label>
                 <input list="tipos-toner" name="tipo" id="tipo" class="form-control" required>
-        
+            
                 <label for="quantidade">Quantidade:</label>
-                <input type="number" name="quantidade" id="quantidade" class="form-control" required>
-        
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="0">
+            
                 <label for="local">Local:</label>
                 <input type="text" name="local" id="local" class="form-control" required>
-        
+            
                 <button type="submit" class="btn mt-2">Retirar Toner</button>
                 <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#modalTonerInfo">
                     <img src="../static/img/eye.png" alt="" style="width: 20px; height: 20px;"/>
                 </button>
-                
             </form>
+            
         </div>
 
         </div> 
@@ -233,6 +234,51 @@
                 }, 2000); // 3000ms = 3 segundos
             });
         };
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const quantidadeInput = document.getElementById('quantidade');
+            const quantidade = parseInt(quantidadeInput.value, 10);
+    
+            if (quantidade < 0) {
+                alert('A quantidade não pode ser menor que 0!');
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+        document.querySelectorAll('form').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                const quantidadeInput = form.querySelector('input[name="quantidade"]');
+                const quantidade = parseInt(quantidadeInput.value, 10);
+        
+            if (quantidade < 0) {
+                alert('A quantidade de resmas não pode ser menor que 0!');
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    });
+    document.querySelectorAll('form').forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            const quantidadeInput = form.querySelector('input[name="quantidade"]');
+            const quantidade = parseInt(quantidadeInput.value, 10);
+        
+            if (quantidade < 0) {
+                alert('A quantidade de toner não pode ser menor que 0!');
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    });
+
+    document.querySelectorAll('form').forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            const quantidadeInput = form.querySelector('input[name="quantidade"]');
+            const quantidade = parseInt(quantidadeInput.value, 10);
+        
+            if (quantidade < 0) {
+                alert('A quantidade de toner não pode ser menor que 0!');
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    });
+        
     </script>
 
 </body>
