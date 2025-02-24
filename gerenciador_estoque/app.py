@@ -2,6 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+#from dao.conection import Conection  # Importa a classe Usuario do arquivo modelo.py
+#from flask import Flask, jsonify
+#import mysql.connector # type: ignore
+from logging import FileHandler,WARNING
+
 
 app = Flask(__name__)
 
@@ -17,7 +22,7 @@ app.secret_key = 'sua_chave_secreta_aqui'
 
 # Usuários fictícios para autenticação
 usuarios = {
-    'admin': generate_password_hash('senha123')  # Senha hash para autenticação
+    'root': generate_password_hash('')  # Senha hash para autenticação
 }
 
 chamados = []
@@ -328,10 +333,43 @@ def principal():
 
 # Rota para login do usuário
 @app.route('/login', methods=['GET', 'POST'])
+#def get_db_connection():
+   # connection = mysql.connector.connect(
+      #  host='localhost',     # Endereço do servidor MySQL
+       # user='root',   # Nome do usuário MySQL
+       # password='', # Senha do MySQL
+      #  database='selbetti', # Nome do banco de dados
+   # )
+  #  return connection
+
 def login():
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+    #try:
+        #connection = mysql.connector.connect(
+        #    host='localhost',     # Endereço do servidor MySQL
+        #    user='root',   # Nome do usuário MySQL
+        #    password='', # Senha do MySQL
+        #    database='selbetti' # Nome do banco de dados
+        #)
+    #except Error as e:
+    #    print("Error while connecting to MySQL", e)
+        
+        #connection = get_db_connection()
+        #cursor = connection.cursor(dictionary=True)
+        
+        # Consulta SQL para pegar os dados
+        #cursor.execute('SELECT * FROM usuarios')
+        
+        # Obter os resultados
+        #usuarios = cursor.fetchall()
+        
+        # Fechar a conexão
+        #cursor.close()
+        #connection.close()
 
         # Verifica se o usuário existe e se a senha está correta
         if username in usuarios and check_password_hash(usuarios[username], password):
@@ -520,6 +558,7 @@ def alterar_senha():
 if __name__ == "__main__":
     # Tenta usar a variável de ambiente PORT ou 5000 como padrão
     port = int(os.environ.get("PORT", 5000))  # Certifique-se de que o valor de PORT está sendo atribuído corretamente
-    app.run(host="0.0.0.0", port=80)
+    app.run(host='0.0.0.0', port=5001)
+
 
 
