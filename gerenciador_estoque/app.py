@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 #from dao.conection import Conection  # Importa a classe Usuario do arquivo modelo.py
 #from flask import Flask, jsonify
-#import mysql.connector # type: ignore
+import mysql.connector # type: ignore
 from logging import FileHandler,WARNING
 
 
@@ -333,6 +333,7 @@ def principal():
 
 # Rota para login do usuário
 @app.route('/login', methods=['GET', 'POST'])
+
 #def get_db_connection():
    # connection = mysql.connector.connect(
       #  host='localhost',     # Endereço do servidor MySQL
@@ -347,7 +348,15 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
+    flash('conectando mysql', 'danger')
+    connection = mysql.connector.connect(
+        host='localhost',     # Endereço do servidor MySQL
+        user='root',   # Nome do usuário MySQL
+        # password='', # Senha do MySQL
+        database='selbetti', # Nome do banco de dados
+    )
+    flash('resultado da conexão:', 'danger')
+    flash(connection, 'danger')
     #try:
         #connection = mysql.connector.connect(
         #    host='localhost',     # Endereço do servidor MySQL
@@ -371,14 +380,14 @@ def login():
         #cursor.close()
         #connection.close()
 
-        # Verifica se o usuário existe e se a senha está correta
-        if username in usuarios and check_password_hash(usuarios[username], password):
-            session['user'] = username  # Armazena o nome de usuário na sessão
-            flash('Login bem-sucedido!', 'success')
-            return redirect(url_for('index'))  # Redireciona para index.html após o login
-        else:
-            flash('Usuário ou senha inválidos!', 'danger')  # Mensagem de erro
-            return render_template('login.html')  # Exibe novamente a página de login com a mensagem de erro
+    # Verifica se o usuário existe e se a senha está correta
+    if username in usuarios and check_password_hash(usuarios[username], password):
+        session['user'] = username  # Armazena o nome de usuário na sessão
+        flash('Login bem-sucedido!', 'success')
+        return redirect(url_for('index'))  # Redireciona para index.html após o login
+    else:
+        flash('Usuário ou senha inválidoos!', 'danger')  # Mensagem de erro
+        return render_template('login.html')  # Exibe novamente a página de login com a mensagem de erro
     
     return render_template('login.html')  # Exibe o formulário de login se for um GET
 
